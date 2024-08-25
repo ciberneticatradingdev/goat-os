@@ -42,7 +42,7 @@ const ConnectMetaMask = () => {
         setAuthorizationMessage('Autorizo a la página "wanchainfun" a logearme con mi cuenta.');
 
         const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = provider.getSigner();
+        const signer = await provider.getSigner();
 
         // Mensaje a firmar
         const message = "Iniciar sesión en Wanchain Testnet - Sesión válida por 30 minutos";
@@ -82,7 +82,6 @@ const ConnectMetaMask = () => {
       console.error("MetaMask no está instalado");
     }
   };
-
   return (
     <div>
       <button onClick={connectWallet}>Conectar MetaMask (Wanchain Testnet)</button>
