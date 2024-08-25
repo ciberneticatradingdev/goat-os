@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 
 const ConnectMetaMask = () => {
   const [account, setAccount] = createSignal<string | null>(null);
+  const [authorizationMessage, setAuthorizationMessage] = createSignal<string | null>(null);
 
   const addWanchainTestnet = async () => {
     if (window.ethereum) {
@@ -37,6 +38,9 @@ const ConnectMetaMask = () => {
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setAccount(accounts[0]);
 
+        // Mostrar el mensaje de autorización
+        setAuthorizationMessage('Autorizo a la página "wanchainfun" a logearme con mi cuenta.');
+
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = provider.getSigner();
 
@@ -70,6 +74,9 @@ const ConnectMetaMask = () => {
 
       } catch (error) {
         console.error("Error al conectar con MetaMask:", error);
+      } finally {
+        // Esconder el mensaje de autorización después de la firma
+        setAuthorizationMessage(null);
       }
     } else {
       console.error("MetaMask no está instalado");
@@ -80,6 +87,7 @@ const ConnectMetaMask = () => {
     <div>
       <button onClick={connectWallet}>Conectar MetaMask (Wanchain Testnet)</button>
       {account() && <p>Cuenta conectada: {account()}</p>}
+      {authorizationMessage() && <p>{authorizationMessage()}</p>}
     </div>
   );
 };
