@@ -1,87 +1,82 @@
-import { createSignal } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { ethers } from "ethers";
 
 const ConnectMetaMask = () => {
   const [account, setAccount] = createSignal<string | null>(null);
   const [authorizationMessage, setAuthorizationMessage] = createSignal<string | null>(null);
 
-  const addWanchainTestnet = async () => {
-    if (window.ethereum) {
-      const chainId = '0x3e7'; // Wanchain Testnet Chain ID in hexadecimal (999 decimal)
+  const checkAuthToken = async () => {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
       try {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainId: chainId,
-              chainName: 'Wanchain Testnet',
-              nativeCurrency: {
-                name: 'WAN',
-                symbol: 'WAN',
-                decimals: 18,
-              },
-              rpcUrls: ['https://gwan-ssl.wandevs.org:46891/'],
-              blockExplorerUrls: ['https://testnet.wanscan.org'],
-            },
-          ],
+        const response = await fetch("/api/auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
         });
+
+        if (response.ok) {
+          const data = await response.json();
+          setAccount(data.account);
+          setAuthorizationMessage("Autenticado");
+        } else {
+          localStorage.removeItem("auth_token");
+          setAuthorizationMessage("Token inválido o expirado, por favor vuelva a iniciar sesión.");
+        }
       } catch (error) {
-        console.error("Error al agregar Wanchain Testnet a MetaMask:", error);
+        console.error("Error al verificar el token:", error);
       }
     }
   };
 
   const connectWallet = async () => {
-    if (window.ethereum) {
+    if (typeof window !== 'undefined' && window.ethereum) {
       try {
-        await addWanchainTestnet();
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        setAccount(accounts[0]);
-
-        // Mostrar el mensaje de autorización
-        setAuthorizationMessage('Autorizo a la página "wanchainfun" a logearme con mi cuenta.');
-
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-
-        // Mensaje a firmar
-        const message = "Iniciar sesión en Wanchain Testnet - Sesión válida por 30 minutos";
+  
+        const message = "Iniciar sesión en Wanchain Testnet - Sesión válida por 1 hora";
         const signature = await signer.signMessage(message);
-
-        console.log("Firma del usuario:", signature);
-
-        // Enviar la firma al servidor para su verificación y crear la sesión
-        const response = await fetch("/api/authenticate", {
+  
+        const requestBody = { account: accounts[0], signature, message };
+  
+        console.log('Request Body being sent:', requestBody);
+  
+        const response = await fetch("/api/auth", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ account: accounts[0], signature, message }),
+          body: JSON.stringify(requestBody),
         });
-
+        
         if (response.ok) {
           const data = await response.json();
-          console.log("Sesión iniciada, token recibido:", data.token);
-
-          // Guardar el token en localStorage
+          setAccount(accounts[0]);
           localStorage.setItem("auth_token", data.token);
-
-          // Redirigir a la aplicación principal o a otra página
-          window.location.href = "/dashboard";
+          setAuthorizationMessage("Autenticado");
         } else {
-          console.error("Error al iniciar sesión:", await response.text());
+          const errorText = await response.text();
+          console.error("Error al iniciar sesión:", errorText);
         }
-
       } catch (error) {
         console.error("Error al conectar con MetaMask:", error);
-      } finally {
-        // Esconder el mensaje de autorización después de la firma
-        setAuthorizationMessage(null);
       }
     } else {
       console.error("MetaMask no está instalado");
     }
   };
+  
+  onMount(() => {
+    if (typeof window !== 'undefined') {
+      console.log("El componente se ha montado en el cliente.");
+      checkAuthToken();
+    }
+  });
+
   return (
     <div>
       <button onClick={connectWallet}>Conectar MetaMask (Wanchain Testnet)</button>

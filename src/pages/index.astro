@@ -1,7 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ConnectMetamask from '../components/ConnectMetaMask.tsx'
+import ConnectMetamask from '../components/ConnectMetaMask.tsx';
+
 ---
+
 
 <Layout
 	title="Astro Web Framework Simple Starter Template"
@@ -14,7 +16,7 @@ import ConnectMetamask from '../components/ConnectMetaMask.tsx'
 	  <section class="w-full flex flex-col justify-center items-center">
 		  
 		  <section class="w-full bg-red00 py-2 flex justify-center ">
-			<ConnectMetamask client:only/>
+			<ConnectMetamask client:load/>
 			<!-- <text class="text-white text-2xl text-center bg-[#2EBDF3]/60 p-2 rounded-lg">REQUEST ADS</text> -->
 		  </section>
 
