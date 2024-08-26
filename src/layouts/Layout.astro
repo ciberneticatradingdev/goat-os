@@ -48,7 +48,7 @@ import Footer from "../components/Footer.astro";
 		<!-- TITLE -->
 		<title>{title}</title>
 	</head>
-	<body class="bg-[url('./noise.gif')]">
+	<body class="bg-[url('/noise.gif')]">
 		<!-- NAVIGATION BAR -->
 		<Nav />
 		<slot />
@@ -61,6 +61,7 @@ import Footer from "../components/Footer.astro";
 			html {
 				font-family: "Open Sans", sans-serif;
 				@apply text-slate-900;
+				@apply bg-[url('/noise.gif')]
 			}
 
 			h1 {
