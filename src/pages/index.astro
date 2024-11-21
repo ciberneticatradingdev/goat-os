@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ConnectMetamask from '../components/ConnectMetaMask.tsx';
+
 
 ---
 
@@ -12,133 +12,29 @@ import ConnectMetamask from '../components/ConnectMetaMask.tsx';
 	canonicalURL="https://astro-simple-starter.netlify.app/"
 	robots="index, follow"
 >
-	<main class="bg-black/90 min-h-screen text-white py-4">
-	  <section class="w-full flex flex-col justify-center items-center">
-		  
-		  <section class="w-full bg-red00 py-2 flex justify-center ">
-			<ConnectMetamask client:load/>
-			<!-- <text class="text-white text-2xl text-center bg-[#2EBDF3]/60 p-2 rounded-lg">REQUEST ADS</text> -->
-		  </section>
-
-	    <!-- --------------------------------------------------------------------------------------- -->
-
-			
-		  <section class="w-full max-w-screen-xl mt-14 flex justify-around items-center">
-			
-				
-	        <button class="flex px-2 justify-center items-center gap-1 bg-[#2EBDF3]/90 hover:bg-gradient-to-br from-[#2EBDF3]/80 via-[#2EBDF3]/60 to-[#2EBDF3]/80 hover:bg-[#2EBDF3]/90 transition ease-in-out text-white font-bold font-mono rounded-lg py-3">
-				<span>Create Coin</span>
-				<svg fill="currentColor" stroke-width="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1.5em" width="1.5em" style="overflow: visible; color: currentcolor;"><path d="M512 80c0 18-14.3 34.6-38.4 48-29.1 16.1-72.5 27.5-122.3 30.9-3.7-1.8-7.4-3.5-11.3-5-39.4-16.5-91.8-25.9-148-25.9-8.3 0-16.4.2-24.5.6l-1.1-.6C142.3 114.6 128 98 128 80c0-44.2 86-80 192-80s192 35.8 192 80zm-351.3 81.1c10.2-.7 20.7-1.1 31.3-1.1 62.2 0 117.4 12.3 152.5 31.4 24.8 13.5 39.5 30.3 39.5 48.6 0 4-.7 7.9-2.1 11.7-4.6 13.2-17 25.3-35 35.5-.1.1-.3.1-.4.2-.3.2-.6.3-.9.5-35 19.4-90.8 32-153.6 32-59.6 0-112.9-11.3-148.2-29.1-1.9-.9-3.7-1.9-5.5-2.9C14.3 274.6 0 258 0 240c0-34.8 53.4-64.5 128-75.4 10.5-1.5 21.4-2.7 32.7-3.5zM416 240c0-21.9-10.6-39.9-24.1-53.4 28.3-4.4 54.2-11.4 76.2-20.5 16.3-6.8 31.5-15.2 43.9-25.5V176c0 19.3-16.5 37.1-43.8 50.9-14.6 7.4-32.4 13.7-52.4 18.5.1-1.8.2-3.5.2-5.3zm-32 96c0 18-14.3 34.6-38.4 48-1.8 1-3.6 1.9-5.5 2.9C304.9 404.7 251.6 416 192 416c-62.8 0-118.6-12.6-153.6-32C14.3 370.6 0 354 0 336v-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 342.6 135.8 352 192 352s108.6-9.4 148.1-25.9c7.8-3.2 15.3-6.9 22.4-10.9 6.1-3.4 11.8-7.2 17.2-11.2 1.5-1.1 2.9-2.3 4.3-3.4V336zm32 0v-57.9c19-4.2 36.5-9.5 52.1-16 16.3-6.8 31.5-15.2 43.9-25.5V272c0 10.5-5 21-14.9 30.9-16.3 16.3-45 29.7-81.3 38.4.1-1.7.2-3.5.2-5.3zM192 448c56.2 0 108.6-9.4 148.1-25.9 16.3-6.8 31.5-15.2 43.9-25.5V432c0 44.2-86 80-192 80S0 476.2 0 432v-35.4c12.5 10.3 27.6 18.7 43.9 25.5C83.4 438.6 135.8 448 192 448z"></path></svg>		    </button>
-		
-		    <div class='w-[500px] border border-white/20 bg-white/20 h-10 rounded-lg text-white flex justify-center items-center p-2 gap-2'>
-			  <svg fill="white" stroke-width="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="1.5em" width="1.5em" style="overflow: visible; color: currentcolor;"><path d="M19.023 16.977a35.13 35.13 0 0 1-1.367-1.384c-.372-.378-.596-.653-.596-.653l-2.8-1.337A6.962 6.962 0 0 0 16 9c0-3.859-3.14-7-7-7S2 5.141 2 9s3.14 7 7 7c1.763 0 3.37-.66 4.603-1.739l1.337 2.8s.275.224.653.596c.387.363.896.854 1.384 1.367l1.358 1.392.604.646 2.121-2.121-.646-.604c-.379-.372-.885-.866-1.391-1.36zM9 14c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path></svg>
-	          <input placeholder="Search by contract adrees or token name" type="text" class="w-full h-full focus:outline-none bg-transparent"/>
-	        </div>
-		
-		    <text class="text-3xl font-extrabold">Have Fun!</text>
-		
-	      </section>
-
-		<!-- --------------------------------------------------------------------------------------- -->
-
-		  <section class="w-96 bg-re500 flex justify-center mt-10 flex-col">
-
-            <div class="w-full flex bg-pik-50 justify-center">
-
-				<div class="flex w-full flex-col text-start gap-0 justify-end">
-					<span class="text-lg text-[#2EBDF3] py-0 leading-none text-start">current</span>
-					<span class="text-3xl py-0 leading-none font-black text-start">BADASS COIN</span>
-				</div>
-
-			    <div class="w-/12 flex justify-center">
-                  <!-- <img class='w-56' src="/rocket.png"/> -->
-				</div>
-
-			</div>
+	<main class="bg-[url('/griddy_background.gif')] bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20  items-center justify-between">
+	  <img src="/griddy4.gif" class="object-cover h-64  sm:h-96"/>
+	  <div class='bg-black/70 p-3 rounded-2xl flex justify-center gap-8'>
 
 
-			<div class="w-full p-2 mt-2 bg-[#2EBDF3]/60 rounded-lg flex">
-				<img class="w-40 h-40 rounded-2xl object-cover" src="/anime.webp"/>
-				<div class="w-7/12 flex flex-col px-2">
-			      <text class="text-sm font-bold text-white mb-[6px] ">MarketCap: $500.30 k🚀</text>
-				  <text class="text-xl font-extrabold text-white/90 leading-none">TOKEN NAME</text>  
-				  <span class="text-start font-bold text-[#2EBDF3] leading-none">$TICKER</span>
-				  <text class="text-start text-sm">This is an example of the description. It should be max this large. a 100 characters. enought. jeje</text>
-                  <text class="text-sm font-bold text-white ">30 days ago</text>
-				</div>
-			</div>
+		<a href='https://pump.fun/coin/A21r5h19iHhQt6b7vzkgHNgMaSAR9YSazGeJedJepump' class="bg-[#00fffb]/80 w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all ">
+			<img src="/pump.png"/>
+		</a>
 
+		<a href='https://dexscreener.com/solana/8xugobqycsbvltl1fhvw3gwdpkcqxripyhmbppfxphj7'class="bg-[#00fffb]/80 w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all  ">
+          <img src="/unnamed.png" class="rounded-full"/>
+		</a>
 
+		<a href='https://t.me/griddyonsol' class=" bg-[#00fffb]/80 w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all  ">
+			<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="16" cy="16" r="14" fill="url(#paint0_linear_87_7225)"></circle> <path d="M22.9866 10.2088C23.1112 9.40332 22.3454 8.76755 21.6292 9.082L7.36482 15.3448C6.85123 15.5703 6.8888 16.3483 7.42147 16.5179L10.3631 17.4547C10.9246 17.6335 11.5325 17.541 12.0228 17.2023L18.655 12.6203C18.855 12.4821 19.073 12.7665 18.9021 12.9426L14.1281 17.8646C13.665 18.3421 13.7569 19.1512 14.314 19.5005L19.659 22.8523C20.2585 23.2282 21.0297 22.8506 21.1418 22.1261L22.9866 10.2088Z" fill="white"></path> <defs> <linearGradient id="paint0_linear_87_7225" x1="16" y1="2" x2="16" y2="30" gradientUnits="userSpaceOnUse"> <stop stop-color="#37BBFE"></stop> <stop offset="1" stop-color="#007DBB"></stop> </linearGradient> </defs> </g></svg>
+		</a>
 
-		  </section>
+		<a href='https://x.com/griddyonsolcto' class="bg-[#00fffb]/80 w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all ">
+			<img src="/x2.jpeg" class="rounded-full"/>
+		</a>
 
-
-		  <!-- --------------------------------------------------------------------------------------- -->
-
-
-		  <section class="w-full max-w-screen-xl mt-10 justify-center flex flex-col items-center">
-
-            <div class="flex gap-2 text-lg justify-center mb-6 bg-white/10 w-fit p-4 rounded-2xl">
-              <text>Sort By: ----------- X</text>
-			  <text>Order: "Descendant" X </text>     
-			</div>
-
-			<div class="w-full flex flex-wrap justify-around gap-y-2"> 
-              
-				<div class="w-96 p-2 mt-2 bg-white/10 rounded-lg flex border border-white/10">
-					<img class="w-40 h-40 rounded-2xl object-cover" src="/messi.jpg"/>
-					<div class="w-7/12 flex flex-col px-2">
-						<text class="text-xl font-extrabold text-white/90 leading-none">TOKEN NAME</text>  
-						<span class="text-start font-bold text-[#2EBDF3] leading-none mb-1">$TICKER</span>
-						<text class="text-start text-sm">This is an example of the description. It should be max this large. a 100 characters. enought. jeje</text>
-						<text class="text-sm font-bold text-white mt-[10px] leading-none ">MarketCap: $500.30 k</text>
-						<text class="text-sm font-thin text-white ">30 days ago</text>
-						
-					</div>
-				</div>
-
-				<div class="w-96 p-2 mt-2 bg-white/10 rounded-lg flex border border-white/10">
-					<img class="w-40 h-40 rounded-2xl object-cover" src="/rocket.png"/>
-					<div class="w-7/12 flex flex-col px-2">
-					  <text class="text-sm font-bold text-white mb-[1px] ">🚀MarketCap: $500.30 k🚀</text>
-					  <text class="text-xl font-extrabold text-white/90 leading-none">TOKEN NAME</text>  
-					  <span class="text-start font-bold text-[#2EBDF3] leading-none">$TICKER</span>
-					  <text class="text-start text-sm">This is an example of the description. It should be max this large. a 100 characters. enought. jeje</text>
-	
-					</div>
-				</div>
-
-
-				<div class="w-96 p-2 mt-2 bg-white/10 rounded-lg flex border border-white/10">
-					<img class="w-40 h-40 rounded-2xl object-cover" src="/noise.gif"/>
-					<div class="w-7/12 flex flex-col px-2">
-					  <text class="text-sm font-bold text-white mb-[1px] ">🚀MarketCap: $500.30 k🚀</text>
-					  <text class="text-xl font-extrabold text-white/90 leading-none">TOKEN NAME</text>  
-					  <span class="text-start font-bold text-[#2EBDF3] leading-none">$TICKER</span>
-					  <text class="text-start text-sm">This is an example of the description. It should be max this large. a 100 characters. enought. jeje</text>
-	
-					</div>
-				</div>
-
-
-
-
-
-				
-
-
-
-
-
-			</div>
-
-
-		  </section>
-
-
-
-      </section>
-
+	  </div>
+	  
 	</main>
 </Layout>
 
