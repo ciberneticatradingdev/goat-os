@@ -23,6 +23,15 @@ import Footer from "../components/Footer.astro";
 		<link rel="icon" type="image/jpeg" href="/sigmabarron.jpeg" />
 		<!-- THEME COLOR -->
 		<meta name="theme-color" content="#800080" />
+		<style>
+			@keyframes fadeInOut {
+				0%, 100% { opacity: 0.2; transform: translateY(10px); }
+				50% { opacity: 0.8; transform: translateY(0); }
+			}
+			.fade-in-out {
+				animation: fadeInOut 4s ease-in-out infinite;
+			}
+		</style>
 		<!-- GENERIC METADATA -->
 		<meta name="author" content="Barron Trump" />
 		<meta name="generator" content={Astro.generator} />
