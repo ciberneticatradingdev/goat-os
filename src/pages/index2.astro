@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const contractAddress = "ECY31gWwxy4s2VnMkYhmqDkrV75KrwR2yTtsnrnSpump";
+---
+
+<Layout
+	title="$BARRON - BARRON TRUMP MEMECOIN"
+	description="Join the ultimate sigma male movement with $BARRON. The first memecoin dedicated to Barron Trump, the most based zoomer and future leader. Experience the power of pure sigma energy on Solana."
+	keywords="Barron Trump, memecoin, sigma male, solana, cryptocurrency, trump family, based zoomer, sigma mindset, crypto memes, solana token, $BARRON, future president, gigachad barron"
+	canonicalURL="https://barrontrumpmeme.fun"
+	robots="index, follow"
+>
+	<main class="bg-black bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20  items-center justify-between">
+	  <img src="/barrontext.jpeg" class="object-cover h-64 sm:h-96"/>
+	  <h1 class="font-['TimesNewRoman'] font-light text-4xl sm:text-6xl text-white tracking-wider -mt-16 sm:mt-4 text-center px-4 leading-tight">
+		BARRON TRUMP MEME
+	  </h1>
+	  
+	  <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
+		<p class="font-mono text-sm sm:text-base text-white/90">
+		  {contractAddress}
+		</p>
+		<button
+		  class="copy-button bg-white/20 p-2 rounded-lg hover:bg-white/30 transition-all"
+		  data-address={contractAddress}
+		>
+		  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+		  </svg>
+		</button>
+	  </div>
+
+	  <div class=' p-3 rounded-2xl flex justify-center gap-8'>
+
+
+		<a href='https://jup.ag/swap/SOL-ECY31gWwxy4s2VnMkYhmqDkrV75KrwR2yTtsnrnSpump' class=" w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all ">
+			<img src="/jupiter2.png"/>
+		</a>
+
+		<a href='https://dexscreener.com/solana/ECY31gWwxy4s2VnMkYhmqDkrV75KrwR2yTtsnrnSpump'class=" w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all  ">
+          <img src="/unnamed.png" class="rounded-full"/>
+		</a>
+
+		<a href='https://t.me/tempbarronportal' class="  w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all  ">
+			<img src="/telegram2.svg" class="rounded-full"/>
+
+		</a>
+
+		<a href='https://x.com/' class=" w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all ">
+			<img src="/x2.jpeg" class="rounded-full"/>
+		</a>
+
+	  </div>
+	</main>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyButtons = document.querySelectorAll('.copy-button');
+    
+    copyButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        const address = button.getAttribute('data-address');
+        try {
+          await navigator.clipboard.writeText(address);
+          
+          // Visual feedback
+          const originalBg = button.classList.contains('bg-white/20');
+          button.classList.remove('bg-white/20');
+          button.classList.add('bg-green-500/50');
+          
+          setTimeout(() => {
+            button.classList.remove('bg-green-500/50');
+            button.classList.add('bg-white/20');
+          }, 1000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    });
+  });
+</script>
+
+<style></style>
