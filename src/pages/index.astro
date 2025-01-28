@@ -11,7 +11,17 @@ const contractAddress = "ArNa8Ua9Xmr7H5tjnMGSAooaBtHWWSYNWFFjYCj6pump";
 	canonicalURL="https://darktrumpmeme.fun"
 	robots="index, follow"
 >
-	<main class="bg-black bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20  items-center justify-between">
+    <div id="landing-page" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <button id="enter-button" class="bg-transparent hover:scale-110 transition-transform duration-300">
+            <img src="/blackflag.png" alt="Enter" class="w-48 sm:w-64 h-auto"/>
+        </button>
+    </div>
+
+    <audio id="background-music" loop>
+        <source src="/godbless.mp3" type="audio/mpeg">
+    </audio>
+
+	<main id="main-content" class="hidden bg-black bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20 items-center justify-between">
 	  <img src="/darktrump2.jpeg" class="object-cover h-64 sm:h-96"/>
 	  <h1 class="font-['TimesNewRoman'] font-light text-4xl sm:text-6xl text-white tracking-wider -mt-16 sm:mt-4 text-center px-4 leading-tight">
 		DARK TRUMP
@@ -61,6 +71,28 @@ const contractAddress = "ArNa8Ua9Xmr7H5tjnMGSAooaBtHWWSYNWFFjYCj6pump";
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    const landingPage = document.getElementById('landing-page');
+    const mainContent = document.getElementById('main-content');
+    const enterButton = document.getElementById('enter-button');
+    const backgroundMusic = document.getElementById('background-music');
+    
+    enterButton.addEventListener('click', () => {
+      // Start playing music
+      backgroundMusic.play();
+      
+      // Hide landing page
+      landingPage.style.display = 'none';
+      
+      // Show and fade in main content
+      mainContent.classList.remove('hidden');
+      mainContent.style.opacity = '0';
+      mainContent.style.transition = 'opacity 1s ease-in-out';
+      
+      // Trigger reflow to ensure transition works
+      mainContent.offsetHeight;
+      mainContent.style.opacity = '1';
+    });
+
     const copyButtons = document.querySelectorAll('.copy-button');
     const contractText = document.querySelector('.contract-text');
     
@@ -108,4 +140,12 @@ const contractAddress = "ArNa8Ua9Xmr7H5tjnMGSAooaBtHWWSYNWFFjYCj6pump";
   });
 </script>
 
-<style></style>
+<style>
+  #main-content {
+    opacity: 0;
+  }
+  
+  #main-content:not(.hidden) {
+    opacity: 1;
+  }
+</style>
