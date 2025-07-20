@@ -17,14 +17,14 @@ const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAdd
         </button>
     </div>
 
-    <audio id="background-music" loop>
+    <audio id="background-music" loop preload="auto">
         <source src="/ye.mp3" type="audio/mpeg">
     </audio>
 
 	<main id="main-content" class="hidden bg-[url('/kanye.jpg')] bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20 items-center justify-between relative">
 	    <!-- Buttons section centered -->
 	    <div class="flex flex-wrap justify-center items-center gap-4 mt-8">
-	        <button id="ca-button" class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl" data-address="{contractAddress}">
+	        <button id="ca-button" class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl" data-address={contractAddress}>
 	            <span class="hidden sm:inline">CA: {contractAddress}</span>
 	            <span class="sm:hidden">CA: {shortContractAddress}</span>
 	        </button>
