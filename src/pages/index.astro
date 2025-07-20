@@ -1,71 +1,41 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
-const contractAddress = "CA WILL BE UPDATED SOON";
+const contractAddress = "9FzeRFVq5weQHTPRE8k1LA1etxU2TqA1vp71EBxYpump";
+const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAddress.slice(-4);
 ---
 
 <Layout
-	title="$DARKTRUMP - The Dark Knight of Crypto Rises"
-	description="Dark Trump rises as a defiant symbol of rebellion, forged in the chaos of a fractured America. As trust in the government crumbles and the people are reduced to shadows, Dark Trump stands against corruption, tyranny, and the looming war with AI. Join the revolution on Solana."
-	keywords="Dark Trump, memecoin, solana, cryptocurrency, rebellion, anti-corruption, freedom fighter, crypto revolution, solana token, $DARKTRUMP, dystopian future, AI war, liberty movement, crypto resistance"
-	canonicalURL="https://darktrumpmeme.fun"
+	title="Floating Kanye | Viral Tik Tok Meme"
+	description=""
+	keywords=""
+	canonicalURL=""
 	robots="index, follow"
 >
-    <div id="landing-page" class="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <button id="enter-button" class="bg-transparent hover:scale-110 transition-transform duration-300">
-            <img src="/blackflag.png" alt="Enter" class="w-48 sm:w-64 h-auto"/>
+    <div id="landing-page" class="fixed inset-0 bg-[url('/floatingye.jpg')] bg-center flex items-center justify-center z-50">
+        <button id="enter-button" class="bg-black/50 border-2 border-white text-white px-8 py-4 text-xl font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl">
+            ENTER SITE
         </button>
     </div>
 
     <audio id="background-music" loop>
-        <source src="/godbless.mp3" type="audio/mpeg">
+        <source src="/ye.mp3" type="audio/mpeg">
     </audio>
 
-	<main id="main-content" class="hidden bg-black bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20 items-center justify-between">
-	  <img src="/darktrump2.jpeg" class="object-cover h-64 sm:h-96"/>
-	  <h1 class="font-['TimesNewRoman'] font-light text-4xl sm:text-6xl text-white tracking-wider -mt-16 sm:mt-4 text-center px-4 leading-tight">
-		DARK TRUMP
-	  </h1>
-	  <p class="font-['TimesNewRoman'] text-base sm:text-lg text-white/80 italic tracking-widest fade-in-out -mt-6">
-		"FIGHT, FIGHT, FIGHT"
-	  </p>
-
-      <div class="flex flex-col sm:flex-row items-center gap-2 bg-white/10 px-2 sm:px-4 py-2 rounded-lg max-w-full mx-4">
-        <p class="font-mono text-xs sm:text-base text-white/90 break-all text-center sm:text-left cursor-pointer hover:text-white/70 transition-all contract-text" data-address={contractAddress}>
-          {contractAddress}
-        </p>
-        <button
-          class="copy-button bg-white/20 p-2 rounded-lg hover:bg-white/30 transition-all mt-2 sm:mt-0 hidden sm:block"
-          data-address={contractAddress}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-          </svg>
-        </button>
-      </div>
-
-	  <div class=' p-3 rounded-2xl flex justify-center gap-8'>
-
-
-		<a href={`https://jup.ag/swap/SOL-${contractAddress}`} class=" w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all ">
-			<img src="/jupiter2.png"/>
-		</a>
-
-		<a href={`https://dexscreener.com/solana/${contractAddress}`}class=" w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all  ">
-          <img src="/unnamed.png" class="rounded-full"/>
-		</a>
-
-		<a href='https://t.me/DT25_MEME_PORTAL' class="  w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all  ">
-			<img src="/telegram2.svg" class="rounded-full"/>
-
-		</a>
-
-		<a href='https://x.com/dt25_meme_coin' class=" w-12 sm:w-20 rounded-xl p-2 hover:scale-105 transition-all ">
-			<img src="/x2.jpeg" class="rounded-full"/>
-		</a>
-
-	  </div>
-	  
+	<main id="main-content" class="hidden bg-[url('/kanye.jpg')] bg-cover bg-center min-h-screen text-white py-4 flex flex-col pt-20 items-center justify-between relative">
+	    <!-- Buttons section centered -->
+	    <div class="flex flex-wrap justify-center items-center gap-4 mt-8">
+	        <button id="ca-button" class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl" data-address="{contractAddress}">
+	            <span class="hidden sm:inline">CA: {contractAddress}</span>
+	            <span class="sm:hidden">CA: {shortContractAddress}</span>
+	        </button>
+	        <button class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl">
+	            TIKTOK
+	        </button>
+	        <button class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl">
+	            X COMMUNITY
+	        </button>
+	    </div>
+	    </div>
 	</main>
 </Layout>
 
@@ -75,6 +45,7 @@ const contractAddress = "CA WILL BE UPDATED SOON";
     const mainContent = document.getElementById('main-content');
     const enterButton = document.getElementById('enter-button');
     const backgroundMusic = document.getElementById('background-music');
+    const caButton = document.getElementById('ca-button');
     
     enterButton.addEventListener('click', () => {
       // Start playing music
@@ -92,6 +63,30 @@ const contractAddress = "CA WILL BE UPDATED SOON";
       mainContent.offsetHeight;
       mainContent.style.opacity = '1';
     });
+
+    // Copy CA to clipboard
+    if (caButton) {
+      caButton.addEventListener('click', async () => {
+        const address = caButton.getAttribute('data-address');
+        try {
+          await navigator.clipboard.writeText(address);
+          
+          // Visual feedback
+          const originalText = caButton.innerHTML;
+          caButton.innerHTML = 'COPIED!';
+          caButton.classList.add('bg-green-500/50');
+          caButton.classList.remove('bg-black/50');
+          
+          setTimeout(() => {
+            caButton.innerHTML = originalText;
+            caButton.classList.remove('bg-green-500/50');
+            caButton.classList.add('bg-black/50');
+          }, 1500);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    }
 
     const copyButtons = document.querySelectorAll('.copy-button');
     const contractText = document.querySelector('.contract-text');

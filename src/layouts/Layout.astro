@@ -18,7 +18,8 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!-- FAVICON -->
-		<link rel="icon" type="image/jpeg" href="/darktrump2.jpeg" />
+		<link rel="icon" type="image/png" href="/seo/icon.png" />
+		<link rel="apple-touch-icon" href="/seo/icon.png" />
 		<!-- THEME COLOR -->
 		<meta name="theme-color" content="#800080" />
 		<style>
@@ -31,7 +32,7 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
 			}
 		</style>
 		<!-- GENERIC METADATA -->
-		<meta name="author" content="Dark Trump" />
+		<meta name="author" content="" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<meta name="keywords" content={keywords} />
@@ -44,9 +45,20 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:image" content="/seo/banner.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:site_name" content="Floating Kanye" />
 		<!-- TWITTER/X CARD DATA -->
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content="/seo/banner.png" />
+		<meta name="twitter:image:alt" content={title} />
+		<!-- TELEGRAM/DISCORD/FACEBOOK SHARING -->
+		<meta property="og:locale" content="en_US" />
+		<meta name="theme-color" content="#000000" />
 		<!-- GOOGLE MATERIAL ICONS -->
 		<link
 			href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -62,11 +74,18 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
 		<!-- SITE FOOTER -->
 		<!-- <Footer /> -->
 		<style is:global>
+			/* CUSTOM FONTS */
+			@font-face {
+				font-family: 'Yeezy';
+				src: url('/font/yeezy.ttf') format('truetype');
+				font-weight: normal;
+				font-style: normal;
+			}
+
 			/* GOOGLE FONTS */
-			@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 			html {
-				font-family: "Open Sans", sans-serif;
+				font-family: "Yeezy", "Open Sans", sans-serif;
 				@apply text-slate-900;
 				@apply bg-cover;
 			}
