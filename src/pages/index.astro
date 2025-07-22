@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-const contractAddress = "9FzeRFVq5weQHTPRE8k1LA1etxU2TqA1vp71EBxYpump";
+const contractAddress = "WILL UPDATE NOW";
 const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAddress.slice(-4);
 ---
 
@@ -8,7 +8,7 @@ const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAdd
 	title="Floating Kanye | Viral Tik Tok Meme"
 	description=""
 	keywords=""
-	canonicalURL=""
+	canonicalURL="https://www.floatingkanye.fun/"
 	robots="index, follow"
 >
     <div id="landing-page" class="fixed inset-0 bg-[url('/floatingye.jpg')] bg-center flex items-center justify-center z-50">
@@ -28,12 +28,10 @@ const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAdd
 	            <span class="hidden sm:inline">CA: {contractAddress}</span>
 	            <span class="sm:hidden">CA: {shortContractAddress}</span>
 	        </button>
-	        <button class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl">
-	            TIKTOK
-	        </button>
-	        <button class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl">
-	            X COMMUNITY
-	        </button>
+	        <button onclick="window.open('https://www.tiktok.com/t/ZT663R9HP/', '_blank')" class="bg-black/50 border-2 border-white text-white px-6 py-3 text-lg font-bold tracking-wider hover:bg-white hover:text-black hover:scale-110 transition-all duration-300 backdrop-blur-sm shadow-2xl cursor-pointer">
+            TIKTOK
+        </button>
+
 	    </div>
 	    </div>
 	</main>
@@ -49,7 +47,7 @@ const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAdd
     
     enterButton.addEventListener('click', () => {
       // Start playing music
-      backgroundMusic.play();
+      (backgroundMusic as HTMLAudioElement).play();
       
       // Hide landing page
       landingPage.style.display = 'none';
@@ -96,7 +94,7 @@ const shortContractAddress = contractAddress.slice(0, 10) + "...." + contractAdd
         await navigator.clipboard.writeText(address);
         
         // Visual feedback
-        const element = event.target.closest('.contract-text, .copy-button');
+        const element = (event.target as HTMLElement).closest('.contract-text, .copy-button');
         const originalBg = element.classList.contains('bg-white/20');
         
         if (originalBg) {
