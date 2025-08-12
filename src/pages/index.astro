@@ -9,7 +9,7 @@ import Layout from "../layouts/Layout.astro";
 	canonicalURL=""
 	robots="index, follow"
 >
-    <!-- Pantalla de carga/intro -->
+    <!-- Loading/intro screen -->
     <div id="intro-screen" class="min-h-screen w-screen flex flex-col items-center justify-center bg-white pt-20">
       <img src="/trollface.png" class="w-80 mb-16" alt="troll" />
       <text class="title text-black text-5xl text-center">Troll-OS</text>
@@ -25,72 +25,86 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
 
-    <!-- Pantalla principal - Escritorio estilo Windows XP -->
+    <!-- Sound modal -->
+    <div id="sound-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white border-4 border-black p-8 max-w-md mx-4">
+        <div class="text-center">
+          <img src="/trollface.png" alt="Trollface" class="w-16 h-16 mx-auto mb-4">
+          <h2 class="text-black text-xl font-bold mb-4">TrollOS Audio Settings</h2>
+          <p class="text-black mb-6">Do you want to activate sound for a better experience?</p>
+          <div class="flex gap-4 justify-center">
+            <button id="sound-yes" class="bg-white border-2 border-black px-6 py-2 text-black font-bold hover:bg-gray-100 transition-colors">
+              Yes
+            </button>
+            <button id="sound-no" class="bg-white border-2 border-black px-6 py-2 text-black font-bold hover:bg-gray-100 transition-colors">
+                No
+              </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main screen - Windows XP style desktop -->
     <div id="main-screen" class="hidden min-h-screen w-screen bg-white relative overflow-hidden">
+      <!-- Background Trollface -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/trollface.png" alt="Trollface" class="w-40 h-40 opacity-20">
+      </div>
       <!-- Desktop Icons -->
-       <div class="absolute top-4 left-4 space-y-6">
+       <div class="absolute top-4 left-4 space-y-6 z-10">
          <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="mycomputer">
-           <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-black text-xs font-bold">📁</span>
-           </div>
-           <span class="text-black text-xs text-center font-semibold">My Computer</span>
+           <img src="/folders/files.png" class="w-20 h-20 bg-white flex items-center justify-center mb-1"
+             
+           />
+           <span class="text-black text-xs text-center font-semibold">Files</span>
          </div>
          
          <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="recycle">
-           <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-black text-xs font-bold">🗑️</span>
-           </div>
-           <span class="text-black text-xs text-center font-semibold">Recycle Bin</span>
+           <img src="/folders/trash.png" class="w-20 h-20 bg-white flex items-center justify-center mb-1"
+             
+           />
+           <span class="text-black text-xs text-center font-semibold">Trash</span>
          </div>
          
          <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="internet">
-           <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-black text-xs font-bold">🌐</span>
-           </div>
+           <img src="/folders/internet.png" class="w-20 h-20 bg-white flex items-center justify-center mb-1"
+             
+           />
            <span class="text-black text-xs text-center font-semibold">Internet Explorer</span>
          </div>
          
          <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="notepad">
-           <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-black text-xs font-bold">📝</span>
-           </div>
-           <span class="text-black text-xs text-center font-semibold">Notepad</span>
+           <img src="/folders/notepad.png" class="w-20 h-20 bg-white flex items-center justify-center mb-1"
+             
+           />
+           <span class="text-black text-xs text-center font-semibold">Text Editor</span>
          </div>
        </div>
        
        <!-- Memecoin Folders -->
-       <div class="absolute top-4 right-4 space-y-6">
+       <div class="absolute top-4 right-4 space-y-6 z-10">
+
          <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="dexscreener">
-           <div class="w-12 h-12 bg-green-500 border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-white text-xs font-bold">📊</span>
-           </div>
+           <img src="/social/dexscreener-black.png" class="w-12 h-12 bg-white flex items-center justify-center mb-1"/>
            <span class="text-black text-xs text-center font-semibold">DexScreener</span>
          </div>
          
          <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="twitter">
-           <div class="w-12 h-12 bg-blue-400 border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-white text-xs font-bold">🐦</span>
-           </div>
-           <span class="text-black text-xs text-center font-semibold">X/Twitter</span>
+           <img src="/social/x-black.png" class="w-12 h-12 bg-white flex items-center justify-center mb-1"
+             
+           />
+           <span class="text-black text-xs text-center font-semibold">x.com</span>
          </div>
          
-         <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="telegram">
-           <div class="w-12 h-12 bg-blue-600 border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-white text-xs font-bold">✈️</span>
-           </div>
-           <span class="text-black text-xs text-center font-semibold">Telegram</span>
-         </div>
-         
-         <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="contract">
-           <div class="w-12 h-12 bg-yellow-500 border-2 border-black flex items-center justify-center mb-1">
-             <span class="text-black text-xs font-bold">📄</span>
-           </div>
-           <span class="text-black text-xs text-center font-semibold">Contract Info</span>
-         </div>
        </div>
       
+      <!-- Animated Troll GIF -->
+      <div class="absolute bottom-32 left-0 w-full h-16 pointer-events-none z-15">
+        <img id="troll-gif" src="/troll.gif" alt="Troll" class="absolute w-32 animate-troll">
+      </div>
+      
       <!-- Taskbar -->
-       <div class="absolute bottom-0 left-0 right-0 h-12 bg-gray-200 border-t-2 border-black flex items-center px-2">
+       <div class="absolute bottom-0 left-0 right-0 h-12 bg-gray-200 border-t-2 border-black flex items-center px-2 z-20">
          <!-- Start Button -->
          <button id="start-button" class="bg-white border-2 border-black px-4 py-1 text-black font-bold hover:bg-gray-100 transition-colors">
            Start
@@ -109,7 +123,7 @@ import Layout from "../layouts/Layout.astro";
        </div>
        
        <!-- Start Menu (hidden by default) -->
-       <div id="start-menu" class="hidden absolute bottom-12 left-0 w-64 bg-white border-2 border-black shadow-lg">
+       <div id="start-menu" class="hidden absolute bottom-12 left-0 w-64 bg-white border-2 border-black shadow-lg z-30">
          <div class="bg-gray-200 border-b-2 border-black p-2">
            <span class="text-black font-bold">Troll-OS</span>
          </div>
@@ -378,9 +392,9 @@ import Layout from "../layouts/Layout.astro";
          }
 
          // Window management
-         function openWindow(appName) {
-           const windowId = appName + '-window';
+         function openWindow(windowId) {
            const window = document.getElementById(windowId);
+           const appName = windowId.replace('-window', '');
            
            if (window && !openWindows.has(appName)) {
               window.classList.remove('hidden');
@@ -503,30 +517,85 @@ import Layout from "../layouts/Layout.astro";
                alert(`${getAppDisplayName(appName)} - This feature is not implemented yet.`);
                break;
              case 'dexscreener':
-              openWindow('dexscreener-window');
-              break;
-            case 'twitter':
-              openWindow('twitter-window');
-              break;
-            case 'telegram':
-              openWindow('telegram-window');
-              break;
-            case 'contract':
-              openWindow('contract-window');
-              break;
+               window.open('https://dexscreener.com', '_blank');
+               break;
+             case 'twitter':
+               window.open('https://x.com', '_blank');
+               break;
+             case 'telegram':
+               openWindow('telegram-window');
+               break;
+             case 'contract':
+               openWindow('contract-window');
+               break;
+             case 'notepad':
+               openWindow('notepad-window');
+               break;
+             case 'internet':
+               openWindow('internet-window');
+               break;
+             case 'mycomputer':
+              case 'files':
+                openWindow('mycomputer-window');
+                break;
+             case 'recycle':
+               openWindow('recycle-window');
+               break;
              default:
                openWindow(appName);
            }
            startMenu.classList.add('hidden');
          }
 
-         // After 4 seconds, switch to main screen
+         // Audio element
+         const audio = new Audio('/troll.mp3');
+         audio.loop = true;
+         
+         // After 4 seconds, show sound modal
          setTimeout(() => {
            introScreen.style.transition = 'opacity 0.5s ease-out';
            introScreen.style.opacity = '0';
            
            setTimeout(() => {
              introScreen.style.display = 'none';
+             document.getElementById('sound-modal').classList.remove('hidden');
+           }, 500);
+         }, 4000);
+         
+         // Sound modal functionality
+         const soundModal = document.getElementById('sound-modal');
+         const soundYes = document.getElementById('sound-yes');
+         const soundNo = document.getElementById('sound-no');
+         
+         function showDesktop(choice) {
+           // Show message based on choice
+           const messageDiv = document.createElement('div');
+           messageDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+           
+           if (choice === 'yes') {
+             messageDiv.innerHTML = `
+               <div class="bg-white border-4 border-black p-8 max-w-md mx-4 text-center">
+                 <img src="/trollface.png" alt="Trollface" class="w-16 h-16 mx-auto mb-4">
+                 <h2 class="text-black text-xl font-bold mb-4">Good choice!</h2>
+                 <p class="text-black">Enjoy the experience... 😈</p>
+               </div>
+             `;
+           } else {
+             messageDiv.innerHTML = `
+                <div class="bg-white border-4 border-black p-8 max-w-md mx-4 text-center">
+                  <img src="/trollface.png" alt="Trollface" class="w-16 h-16 mx-auto mb-4">
+                  <h2 class="text-black text-xl font-bold mb-4">Too bad! 😈</h2>
+                  <p class="text-black">We're going to play it anyway... Problem? 🎵</p>
+                </div>
+              `;
+           }
+           
+           document.body.appendChild(messageDiv);
+           
+           // Remove message after 2 seconds and show desktop
+           setTimeout(() => {
+             document.body.removeChild(messageDiv);
+             soundModal.classList.add('hidden');
              mainScreen.classList.remove('hidden');
              mainScreen.style.opacity = '0';
              mainScreen.style.transition = 'opacity 0.5s ease-in';
@@ -537,8 +606,15 @@ import Layout from "../layouts/Layout.astro";
              // Initialize clock
              updateClock();
              setInterval(updateClock, 1000);
-           }, 500);
-         }, 4000);
+           }, 2000);
+           
+           // Start audio at 7 seconds immediately after click
+           audio.currentTime = 7;
+           audio.play().catch(e => console.log('Audio autoplay blocked'));
+         }
+         
+         soundYes.addEventListener('click', () => showDesktop('yes'));
+         soundNo.addEventListener('click', () => showDesktop('no'));
 
          // Start menu functionality
          if (startButton && startMenu) {
@@ -558,7 +634,7 @@ import Layout from "../layouts/Layout.astro";
          // Desktop icons functionality
          const desktopIcons = document.querySelectorAll('.desktop-icon');
          desktopIcons.forEach(icon => {
-           icon.addEventListener('dblclick', () => {
+           icon.addEventListener('click', () => {
              const appName = icon.getAttribute('data-app');
              if (appName) {
                launchApp(appName);
@@ -614,6 +690,23 @@ import Layout from "../layouts/Layout.astro";
       @keyframes fadeOut {
         from { opacity: 1; }
         to { opacity: 0; visibility: hidden; }
+      }
+
+      @keyframes trollMove {
+        0% { left: -60px; }
+        100% { left: calc(100% + 60px); }
+      }
+
+      .animate-troll {
+        animation: trollMove 8s linear infinite;
+      }
+
+      .title {
+        font-family: 'FSEX302', monospace;
+      }
+
+      .subtitle {
+        font-family: 'FSEX302', monospace;
       }
     </style>
 </Layout>
