@@ -67,7 +67,7 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
 		<!-- TITLE -->
 		<title>{title}</title>
 	</head>
-	<body class="bg-black">
+	<body class="bg-white">
 		<!-- NAVIGATION BAR -->
 		<!-- <Nav /> -->
 		<slot />
@@ -82,10 +82,17 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
 				font-style: normal;
 			}
 
+			@font-face {
+				font-family: 'FSEX302';
+				src: url('/font/FSEX302.ttf') format('truetype');
+				font-weight: normal;
+				font-style: normal;
+			}
+
 			/* GOOGLE FONTS */
 
 			html {
-				font-family: "Yeezy", "Open Sans", sans-serif;
+				font-family: "FSEX302", "Open Sans", sans-serif;
 				@apply text-slate-900;
 				@apply bg-cover;
 			}
