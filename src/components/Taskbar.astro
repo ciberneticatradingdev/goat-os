@@ -15,8 +15,10 @@
   <!-- Open Applications -->
   <div id="taskbar-apps" class="flex-1 flex gap-1"></div>
   
-  <!-- Clock -->
-  <div class="bg-[#ff980d] border-2 border-black px-3 py-1">
-    <span id="clock" class="text-black text-sm font-mono"></span>
+  <!-- Contract Address -->
+  <div class="bg-[#ff980d] border-2 border-black px-3 py-1 cursor-pointer hover:bg-[#ffb84d] transition-colors" 
+       onclick="copyContractAddress()" 
+       title="Click to copy contract address">
+    <span class="text-black text-sm font-mono">CA: 0x1234...5678</span>
   </div>
 </div>

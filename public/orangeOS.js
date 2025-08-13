@@ -20,7 +20,6 @@ class OrangeOS {
     this.mainScreen = document.getElementById('main-screen');
     this.startButton = document.getElementById('start-button');
     this.startMenu = document.getElementById('start-menu');
-    this.clock = document.getElementById('clock');
     this.taskbarApps = document.getElementById('taskbar-apps');
   }
 
@@ -78,23 +77,9 @@ class OrangeOS {
         this.mainScreen.offsetHeight;
         this.mainScreen.style.opacity = '1';
         
-        // Initialize clock
-        this.updateClock();
-        setInterval(() => this.updateClock(), 1000);
+        // Clock removed - replaced with contract address component
       }, 500);
     }, 4000);
-  }
-
-  updateClock() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-    if (this.clock) {
-      this.clock.textContent = timeString;
-    }
   }
 
   openWindow(windowId) {
@@ -224,6 +209,8 @@ class OrangeOS {
         }
         break;
       case 'mydocuments':
+        this.openWindow('mycomputer-window');
+        break;
       case 'controlpanel':
       case 'search':
       case 'help':
@@ -252,7 +239,7 @@ class OrangeOS {
         this.openWindow('mycomputer-window');
         break;
       case 'recycle':
-        this.openWindow('recycle-window');
+        this.openWindow('trash-window');
         break;
       default:
         this.openWindow(appName + '-window');
@@ -262,4 +249,152 @@ class OrangeOS {
 }
 
 // Initialize Orange-OS
+
+// Photo navigation variables
+let currentPhotoIndex = 1;
+const totalPhotos = 13;
+
+// Photo viewer functions
+function viewPhoto(imageSrc, photoIndex) {
+  currentPhotoIndex = photoIndex || 1;
+  const photoViewer = document.getElementById('photo-viewer');
+  const photoImg = document.getElementById('photo-viewer-img');
+  const photoCounter = document.getElementById('photo-counter');
+  photoImg.src = imageSrc;
+  photoCounter.textContent = `${currentPhotoIndex} / ${totalPhotos}`;
+  photoViewer.classList.remove('hidden');
+}
+
+function closePhotoViewer() {
+  const photoViewer = document.getElementById('photo-viewer');
+  photoViewer.classList.add('hidden');
+}
+
+function previousPhoto() {
+  if (currentPhotoIndex > 1) {
+    currentPhotoIndex--;
+    viewPhoto(`/mypictures/${currentPhotoIndex}.jpeg`, currentPhotoIndex);
+  }
+}
+
+function nextPhoto() {
+  if (currentPhotoIndex < totalPhotos) {
+    currentPhotoIndex++;
+    viewPhoto(`/mypictures/${currentPhotoIndex}.jpeg`, currentPhotoIndex);
+  }
+}
+
+// PDF viewer functions
+function viewPDF(pdfSrc) {
+  const pdfViewer = document.getElementById('pdf-viewer');
+  const pdfFrame = document.getElementById('pdf-viewer-frame');
+  pdfFrame.src = pdfSrc;
+  pdfViewer.classList.remove('hidden');
+}
+
+function closePDFViewer() {
+  const pdfViewer = document.getElementById('pdf-viewer');
+  pdfViewer.classList.add('hidden');
+  const pdfFrame = document.getElementById('pdf-viewer-frame');
+  pdfFrame.src = '';
+}
+
+// My Computer navigation functions
+function navigateToDocuments() {
+  const mainView = document.getElementById('main-view');
+  const documentsView = document.getElementById('documents-view');
+  const picturesView = document.getElementById('pictures-view');
+  const backBtn = document.getElementById('back-btn');
+  const title = document.getElementById('mycomputer-title');
+  
+  mainView.classList.add('hidden');
+  picturesView.classList.add('hidden');
+  documentsView.classList.remove('hidden');
+  backBtn.classList.remove('hidden');
+  title.textContent = 'My Documents';
+}
+
+function navigateToPictures() {
+  const mainView = document.getElementById('main-view');
+  const documentsView = document.getElementById('documents-view');
+  const picturesView = document.getElementById('pictures-view');
+  const backBtn = document.getElementById('back-btn');
+  const title = document.getElementById('mycomputer-title');
+  
+  mainView.classList.add('hidden');
+  documentsView.classList.add('hidden');
+  picturesView.classList.remove('hidden');
+  backBtn.classList.remove('hidden');
+  title.textContent = 'My Pictures';
+}
+
+function navigateBack() {
+  const mainView = document.getElementById('main-view');
+  const documentsView = document.getElementById('documents-view');
+  const picturesView = document.getElementById('pictures-view');
+  const backBtn = document.getElementById('back-btn');
+  const title = document.getElementById('mycomputer-title');
+  
+  documentsView.classList.add('hidden');
+  picturesView.classList.add('hidden');
+  mainView.classList.remove('hidden');
+  backBtn.classList.add('hidden');
+  title.textContent = 'My Computer';
+}
+
 const orangeOS = new OrangeOS();
+
+// Contract address function
+function copyContractAddress() {
+  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678"; // Replace with actual contract address
+  
+  navigator.clipboard.writeText(contractAddress).then(() => {
+    // Show a brief notification
+    const notification = document.createElement('div');
+    notification.textContent = 'Contract address copied!';
+    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[10000] transition-opacity';
+    document.body.appendChild(notification);
+    
+    // Remove notification after 2 seconds
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy contract address: ', err);
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = contractAddress;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    // Show notification for fallback too
+    const notification = document.createElement('div');
+    notification.textContent = 'Contract address copied!';
+    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[10000] transition-opacity';
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 2000);
+  });
+}
+
+// Make functions globally accessible
+window.viewPhoto = viewPhoto;
+window.closePhotoViewer = closePhotoViewer;
+window.previousPhoto = previousPhoto;
+window.nextPhoto = nextPhoto;
+window.viewPDF = viewPDF;
+window.closePDFViewer = closePDFViewer;
+window.navigateToDocuments = navigateToDocuments;
+window.navigateToPictures = navigateToPictures;
+window.navigateBack = navigateBack;
+window.copyContractAddress = copyContractAddress;
