@@ -1,4 +1,6 @@
 // Orange-OS Main Application Logic
+// Global contract address variable
+const CONTRACT_ADDRESS = "CA WILL UPDATE SOON"; // Replace with actual contract address
 
 class OrangeOS {
   constructor() {
@@ -11,6 +13,7 @@ class OrangeOS {
     document.addEventListener('DOMContentLoaded', () => {
       this.initializeElements();
       this.setupEventListeners();
+      this.initializeContractAddress();
       this.startIntroSequence();
     });
   }
@@ -60,6 +63,24 @@ class OrangeOS {
         }
       });
     });
+  }
+
+  initializeContractAddress() {
+    // Initialize taskbar contract address display
+    const taskbarContractFull = document.getElementById('taskbar-contract-full');
+    const taskbarContractShort = document.getElementById('taskbar-contract-short');
+    
+    if (taskbarContractFull) {
+      taskbarContractFull.textContent = CONTRACT_ADDRESS;
+    }
+    
+    if (taskbarContractShort) {
+      // Create shortened version for mobile
+      const shortAddress = CONTRACT_ADDRESS.length > 10 ? 
+        CONTRACT_ADDRESS.substring(0, 6) + '...' + CONTRACT_ADDRESS.substring(CONTRACT_ADDRESS.length - 4) : 
+        CONTRACT_ADDRESS;
+      taskbarContractShort.textContent = shortAddress;
+    }
   }
 
   startIntroSequence() {
@@ -150,6 +171,7 @@ class OrangeOS {
       'internet': 'Internet Explorer',
       'recycle': 'Recycle Bin',
       'mydocuments': 'My Documents',
+      'myvideos': 'My Videos',
       'controlpanel': 'Control Panel',
       'search': 'Search',
       'help': 'Help',
@@ -157,7 +179,8 @@ class OrangeOS {
       'twitter': 'X/Twitter',
       'telegram': 'Telegram',
       'contract': 'Contract Info',
-      'chat': 'Chat'
+      'chat': 'Chat',
+      'orangeteaser': 'Orange Era Teaser'
     };
     return names[appName] || appName;
   }
@@ -218,22 +241,50 @@ class OrangeOS {
         this.openWindow('mycomputer-window');
         setTimeout(() => navigateToPictures(), 300);
         break;
+      case 'myvideos':
+        this.openWindow('mycomputer-window');
+        setTimeout(() => navigateToVideos(), 300);
+        break;
       case 'controlpanel':
       case 'search':
       case 'help':
         alert(`${this.getAppDisplayName(appName)} - This feature is not implemented yet.`);
         break;
       case 'dexscreener':
-        window.open('https://dexscreener.com', '_blank');
+        window.open(`https://dexscreener.com/solana/${CONTRACT_ADDRESS}`, '_blank');
         break;
       case 'twitter':
-        window.open('https://x.com', '_blank');
+        window.open('https://x.com/orangeos_', '_blank');
         break;
       case 'telegram':
         this.openWindow('telegram-window');
         break;
       case 'contract':
         this.openWindow('contract-window');
+        setTimeout(() => {
+          // Fill contract address display
+          const addressDisplay = document.getElementById('contract-address-display');
+          const copyBtn = document.getElementById('copy-contract-btn');
+          
+          if (addressDisplay) {
+            addressDisplay.textContent = CONTRACT_ADDRESS;
+          }
+          
+          if (copyBtn) {
+            copyBtn.onclick = () => {
+              navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => {
+                // Show brief notification
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                copyBtn.style.backgroundColor = '#10b981';
+                setTimeout(() => {
+                  copyBtn.textContent = originalText;
+                  copyBtn.style.backgroundColor = '#3b82f6';
+                }, 1000);
+              });
+            };
+          }
+        }, 100);
         break;
       case 'notepad':
         this.openWindow('notepad-window');
@@ -251,6 +302,9 @@ class OrangeOS {
       case 'chat':
         this.openWindow('chat-window');
         loadChatMessages();
+        break;
+      case 'orangeteaser':
+        this.openWindow('orangeteaser-window');
         break;
       default:
         this.openWindow(appName + '-window');
@@ -295,6 +349,45 @@ function nextPhoto() {
   }
 }
 
+// Video navigation variables
+let currentVideoIndex = 1;
+const totalVideos = 6;
+
+// Video viewer functions
+function viewVideo(videoSrc, videoIndex) {
+  currentVideoIndex = videoIndex || 1;
+  const videoViewer = document.getElementById('video-viewer');
+  const videoElement = document.getElementById('video-viewer-video');
+  const videoCounter = document.getElementById('video-counter');
+  const videoSource = videoElement.querySelector('source');
+  
+  videoSource.src = videoSrc;
+  videoElement.load();
+  videoCounter.textContent = `${currentVideoIndex} / ${totalVideos}`;
+  videoViewer.classList.remove('hidden');
+}
+
+function closeVideoViewer() {
+  const videoViewer = document.getElementById('video-viewer');
+  const videoElement = document.getElementById('video-viewer-video');
+  videoViewer.classList.add('hidden');
+  videoElement.pause();
+}
+
+function previousVideo() {
+  if (currentVideoIndex > 1) {
+    currentVideoIndex--;
+    viewVideo(`/videos/${currentVideoIndex}.mp4`, currentVideoIndex);
+  }
+}
+
+function nextVideo() {
+  if (currentVideoIndex < totalVideos) {
+    currentVideoIndex++;
+    viewVideo(`/videos/${currentVideoIndex}.mp4`, currentVideoIndex);
+  }
+}
+
 // PDF viewer functions
 function viewPDF(pdfSrc) {
   const pdfViewer = document.getElementById('pdf-viewer');
@@ -315,11 +408,13 @@ function navigateToDocuments() {
   const mainView = document.getElementById('main-view');
   const documentsView = document.getElementById('documents-view');
   const picturesView = document.getElementById('pictures-view');
+  const videosView = document.getElementById('videos-view');
   const backBtn = document.getElementById('back-btn');
   const title = document.getElementById('mycomputer-title');
   
   mainView.classList.add('hidden');
   picturesView.classList.add('hidden');
+  videosView.classList.add('hidden');
   documentsView.classList.remove('hidden');
   backBtn.classList.remove('hidden');
   title.textContent = 'My Documents';
@@ -329,25 +424,45 @@ function navigateToPictures() {
   const mainView = document.getElementById('main-view');
   const documentsView = document.getElementById('documents-view');
   const picturesView = document.getElementById('pictures-view');
+  const videosView = document.getElementById('videos-view');
   const backBtn = document.getElementById('back-btn');
   const title = document.getElementById('mycomputer-title');
   
   mainView.classList.add('hidden');
   documentsView.classList.add('hidden');
+  videosView.classList.add('hidden');
   picturesView.classList.remove('hidden');
   backBtn.classList.remove('hidden');
   title.textContent = 'My Pictures';
+}
+
+function navigateToVideos() {
+  const mainView = document.getElementById('main-view');
+  const documentsView = document.getElementById('documents-view');
+  const picturesView = document.getElementById('pictures-view');
+  const videosView = document.getElementById('videos-view');
+  const backBtn = document.getElementById('back-btn');
+  const title = document.getElementById('mycomputer-title');
+  
+  mainView.classList.add('hidden');
+  documentsView.classList.add('hidden');
+  picturesView.classList.add('hidden');
+  videosView.classList.remove('hidden');
+  backBtn.classList.remove('hidden');
+  title.textContent = 'My Videos';
 }
 
 function navigateBack() {
   const mainView = document.getElementById('main-view');
   const documentsView = document.getElementById('documents-view');
   const picturesView = document.getElementById('pictures-view');
+  const videosView = document.getElementById('videos-view');
   const backBtn = document.getElementById('back-btn');
   const title = document.getElementById('mycomputer-title');
   
   documentsView.classList.add('hidden');
   picturesView.classList.add('hidden');
+  videosView.classList.add('hidden');
   mainView.classList.remove('hidden');
   backBtn.classList.add('hidden');
   title.textContent = 'My Computer';
@@ -357,7 +472,7 @@ const orangeOS = new OrangeOS();
 
 // Contract address function
 function copyContractAddress() {
-  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678"; // Replace with actual contract address
+  const contractAddress = CONTRACT_ADDRESS;
   
   navigator.clipboard.writeText(contractAddress).then(() => {
     // Show a brief notification
@@ -418,9 +533,14 @@ function initializeSupabase() {
         params: {
           eventsPerSecond: 10
         }
+      },
+      auth: {
+        persistSession: false
       }
     });
     console.log('✅ Supabase client initialized with realtime enabled');
+    console.log('🔗 Supabase URL:', SUPABASE_URL);
+    console.log('🔑 Using anon key (first 20 chars):', SUPABASE_ANON_KEY.substring(0, 20) + '...');
     
     // Test connection
     testSupabaseConnection();
@@ -496,11 +616,23 @@ function setupRealtimeSubscription() {
     return;
   }
   
-  console.log('Setting up realtime subscription...');
+  console.log('🔗 Setting up realtime subscription...');
+  console.log('📡 Creating channel for chat_messages table');
+  
+  // Close existing subscription if any
+  if (chatSubscription) {
+    console.log('🔒 Closing existing subscription');
+    chatSubscription.unsubscribe();
+    chatSubscription = null;
+  }
+  
+  // Create a unique channel name
+  const channelName = 'chat_messages_' + Date.now();
+  console.log('📺 Channel name:', channelName);
   
   // Create a channel for chat_messages table
   const channel = supabaseClient
-    .channel('chat_messages_channel')
+    .channel(channelName)
     .on(
       'postgres_changes',
       {
@@ -509,30 +641,51 @@ function setupRealtimeSubscription() {
         table: 'chat_messages'
       },
       (payload) => {
-        console.log('New message received via realtime:', payload.new);
+        console.log('📨 New message received via realtime:', payload.new);
         addNewMessageToChat(payload.new);
       }
     )
+    .on('postgres_changes', 
+      {
+        event: '*',
+        schema: 'public',
+        table: 'chat_messages'
+      },
+      (payload) => {
+        console.log('📊 Database change detected:', payload.eventType, payload.new);
+      }
+    )
     .on('error', (error) => {
-      console.error('Realtime subscription error:', error);
+      console.error('❌ Realtime subscription error:', error);
     })
     .subscribe((status, error) => {
-      console.log('Subscription status:', status);
+      console.log('📡 Subscription status changed to:', status);
       if (error) {
-        console.error('Subscription error:', error);
+        console.error('❌ Subscription error details:', error);
       }
-      if (status === 'SUBSCRIBED') {
-        console.log('✅ Successfully subscribed to chat messages realtime updates');
-      } else if (status === 'CHANNEL_ERROR') {
-        console.error('❌ Channel error - realtime may not be enabled');
-      } else if (status === 'TIMED_OUT') {
-        console.error('❌ Subscription timed out');
-      } else if (status === 'CLOSED') {
-        console.log('🔒 Subscription closed');
+      
+      switch(status) {
+        case 'SUBSCRIBED':
+          console.log('✅ Successfully subscribed to chat messages realtime updates');
+          break;
+        case 'CHANNEL_ERROR':
+          console.error('❌ Channel error - realtime may not be enabled on this table');
+          console.log('💡 Try enabling realtime in Supabase dashboard: Database > Replication');
+          break;
+        case 'TIMED_OUT':
+          console.error('❌ Subscription timed out - retrying in 5 seconds');
+          setTimeout(setupRealtimeSubscription, 5000);
+          break;
+        case 'CLOSED':
+          console.log('🔒 Subscription closed');
+          break;
+        default:
+          console.log('📡 Unknown status:', status);
       }
     });
   
   chatSubscription = channel;
+  console.log('💾 Subscription stored in chatSubscription variable');
 }
 
 // Add a new message to the chat without reloading all messages
