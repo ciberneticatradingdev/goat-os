@@ -3,7 +3,7 @@
 ---
 
 <!-- Desktop Icons -->
-<div class="absolute top-4 left-4 space-y-6 z-10">
+<div class="absolute top-4 left-4 space-y-6 z-10 desktop-icons-left">
   <div class="desktop-icon flex flex-col items-center cursor-pointer hover:bg-gray-100 p-2 rounded" data-app="mycomputer">
     <img src="/folders/files.png" class="w-20 h-20 flex items-center justify-center mb-1" />
     <span class="text-black text-xs text-center font-semibold">Files</span>
@@ -29,6 +29,30 @@
     <span class="text-black text-xs text-center font-semibold">Chat</span>
   </div>
 </div>
+
+<style>
+  /* Mobile styles - reduce left desktop icons size */
+  @media (max-width: 768px) {
+    .desktop-icons-left {
+      top: 0.5rem !important; /* top-2 equivalent */
+      left: 0.5rem !important; /* left-2 equivalent */
+      gap: 0.75rem !important; /* space-y-3 equivalent */
+    }
+    
+    .desktop-icons-left .desktop-icon img {
+      width: 3.5rem !important; /* w-14 equivalent */
+      height: 3.5rem !important; /* h-14 equivalent */
+    }
+    
+    .desktop-icons-left .desktop-icon span {
+      font-size: 0.625rem !important; /* text-xs smaller */
+    }
+    
+    .desktop-icons-left .desktop-icon {
+      padding: 0.25rem !important; /* p-1 equivalent */
+    }
+  }
+</style>
 
 <!-- Memecoin Folders -->
 <div class="absolute top-4 right-4 space-y-6 z-10">
