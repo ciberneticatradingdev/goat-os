@@ -109,6 +109,13 @@ class OrangeOS {
       window.classList.add('hidden');
       this.openWindows.delete(appName);
       this.removeFromTaskbar(appName);
+      
+      // Clean up chat subscription when closing chat window
+      if (appName === 'chat' && chatSubscription) {
+        supabaseClient.removeChannel(chatSubscription);
+        chatSubscription = null;
+        console.log('Chat subscription closed');
+      }
     }
   }
 
@@ -149,7 +156,8 @@ class OrangeOS {
       'dexscreener': 'DexScreener',
       'twitter': 'X/Twitter',
       'telegram': 'Telegram',
-      'contract': 'Contract Info'
+      'contract': 'Contract Info',
+      'chat': 'Chat'
     };
     return names[appName] || appName;
   }
@@ -164,21 +172,16 @@ class OrangeOS {
     let xOffset = 0;
     let yOffset = 0;
 
-    header.addEventListener('mousedown', (e) => this.dragStart(e, windowElement));
-    document.addEventListener('mousemove', (e) => this.drag(e, windowElement));
-    document.addEventListener('mouseup', () => this.dragEnd());
-
-    const dragStart = (e, windowElement) => {
-      initialX = e.clientX - xOffset;
-      initialY = e.clientY - yOffset;
-
+    const dragStart = (e) => {
       if (e.target === header || header.contains(e.target)) {
         isDragging = true;
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
         windowElement.style.zIndex = (++this.zIndexCounter).toString();
       }
     };
 
-    const drag = (e, windowElement) => {
+    const drag = (e) => {
       if (isDragging) {
         e.preventDefault();
         currentX = e.clientX - initialX;
@@ -194,10 +197,9 @@ class OrangeOS {
       isDragging = false;
     };
 
-    // Bind methods to this context
-    this.dragStart = dragStart;
-    this.drag = drag;
-    this.dragEnd = dragEnd;
+    header.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
   }
 
   launchApp(appName) {
@@ -210,6 +212,11 @@ class OrangeOS {
         break;
       case 'mydocuments':
         this.openWindow('mycomputer-window');
+        setTimeout(() => navigateToDocuments(), 300);
+        break;
+      case 'mypictures':
+        this.openWindow('mycomputer-window');
+        setTimeout(() => navigateToPictures(), 300);
         break;
       case 'controlpanel':
       case 'search':
@@ -240,6 +247,10 @@ class OrangeOS {
         break;
       case 'recycle':
         this.openWindow('trash-window');
+        break;
+      case 'chat':
+        this.openWindow('chat-window');
+        loadChatMessages();
         break;
       default:
         this.openWindow(appName + '-window');
@@ -352,14 +363,16 @@ function copyContractAddress() {
     // Show a brief notification
     const notification = document.createElement('div');
     notification.textContent = 'Contract address copied!';
-    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[10000] transition-opacity';
+    notification.style.cssText = 'position: fixed; bottom: 4rem; right: 1rem; background-color: #ff9b05; color: black; padding: 0.5rem 1rem; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 999999; transition: opacity 0.3s; font-family: system-ui, -apple-system, sans-serif; border: 2px solid black;';
     document.body.appendChild(notification);
     
     // Remove notification after 2 seconds
     setTimeout(() => {
       notification.style.opacity = '0';
       setTimeout(() => {
-        document.body.removeChild(notification);
+        if (notification.parentNode) {
+          document.body.removeChild(notification);
+        }
       }, 300);
     }, 2000);
   }).catch(err => {
@@ -375,17 +388,281 @@ function copyContractAddress() {
     // Show notification for fallback too
     const notification = document.createElement('div');
     notification.textContent = 'Contract address copied!';
-    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[10000] transition-opacity';
+    notification.style.cssText = 'position: fixed; bottom: 4rem; right: 1rem; background-color: #ff9b05; color: black; padding: 0.5rem 1rem; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 999999; transition: opacity 0.3s; font-family: system-ui, -apple-system, sans-serif; border: 2px solid black;';
     document.body.appendChild(notification);
     
     setTimeout(() => {
       notification.style.opacity = '0';
       setTimeout(() => {
-        document.body.removeChild(notification);
+        if (notification.parentNode) {
+          document.body.removeChild(notification);
+        }
       }, 300);
     }, 2000);
   });
 }
+
+// Supabase configuration
+const SUPABASE_URL = 'https://zfasxsiqjlxjaqojtvzt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmYXN4c2lxamx4amFxb2p0dnp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NTQ2NzEsImV4cCI6MjA3MDEzMDY3MX0.skvv6gB0mulDoZ-v-lcSf_2MNbZrWkAYM2lQeNW9nNQ';
+
+// Initialize Supabase client
+let supabaseClient = null;
+let chatSubscription = null;
+
+// Initialize Supabase when available
+function initializeSupabase() {
+  if (typeof window !== 'undefined' && window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      realtime: {
+        params: {
+          eventsPerSecond: 10
+        }
+      }
+    });
+    console.log('✅ Supabase client initialized with realtime enabled');
+    
+    // Test connection
+    testSupabaseConnection();
+  } else {
+    console.log('⏳ Supabase not available yet, retrying...');
+    setTimeout(initializeSupabase, 100);
+  }
+}
+
+// Test Supabase connection
+async function testSupabaseConnection() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('chat_messages')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      console.error('❌ Supabase connection test failed:', error);
+    } else {
+      console.log('✅ Supabase connection test successful');
+    }
+  } catch (error) {
+    console.error('❌ Supabase connection test error:', error);
+  }
+}
+
+// Start initialization
+initializeSupabase();
+
+// Chat functionality
+async function loadChatMessages() {
+  if (!supabaseClient) {
+    console.log('Supabase client not ready, retrying...');
+    setTimeout(loadChatMessages, 500);
+    return;
+  }
+  
+  console.log('🔄 Loading chat messages...');
+  
+  try {
+    const { data: messages, error } = await supabaseClient
+      .from('chat_messages')
+      .select('*')
+      .order('created_at', { ascending: true })
+      .limit(50);
+    
+    if (error) {
+      console.error('❌ Error loading messages:', error);
+      return;
+    }
+    
+    console.log(`✅ Loaded ${messages?.length || 0} messages`);
+    displayChatMessages(messages || []);
+    
+    // Set up real-time subscription if not already active
+    if (!chatSubscription) {
+      console.log('🔗 Setting up realtime subscription...');
+      setupRealtimeSubscription();
+    } else {
+      console.log('✅ Realtime subscription already active');
+    }
+  } catch (error) {
+    console.error('❌ Error loading chat messages:', error);
+  }
+}
+
+// Set up real-time subscription for new messages
+function setupRealtimeSubscription() {
+  if (!supabaseClient) {
+    console.log('Supabase client not ready, retrying...');
+    setTimeout(setupRealtimeSubscription, 500);
+    return;
+  }
+  
+  console.log('Setting up realtime subscription...');
+  
+  // Create a channel for chat_messages table
+  const channel = supabaseClient
+    .channel('chat_messages_channel')
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages'
+      },
+      (payload) => {
+        console.log('New message received via realtime:', payload.new);
+        addNewMessageToChat(payload.new);
+      }
+    )
+    .on('error', (error) => {
+      console.error('Realtime subscription error:', error);
+    })
+    .subscribe((status, error) => {
+      console.log('Subscription status:', status);
+      if (error) {
+        console.error('Subscription error:', error);
+      }
+      if (status === 'SUBSCRIBED') {
+        console.log('✅ Successfully subscribed to chat messages realtime updates');
+      } else if (status === 'CHANNEL_ERROR') {
+        console.error('❌ Channel error - realtime may not be enabled');
+      } else if (status === 'TIMED_OUT') {
+        console.error('❌ Subscription timed out');
+      } else if (status === 'CLOSED') {
+        console.log('🔒 Subscription closed');
+      }
+    });
+  
+  chatSubscription = channel;
+}
+
+// Add a new message to the chat without reloading all messages
+function addNewMessageToChat(message) {
+  const chatMessages = document.getElementById('chat-messages');
+  if (!chatMessages) return;
+  
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'chat-message mb-3 p-3 bg-white border border-gray-200 rounded';
+  
+  const timestamp = new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  
+  messageDiv.innerHTML = `
+    <div class="flex justify-between items-start mb-1">
+      <span class="font-semibold text-orange-600">${escapeHtml(message.username)}</span>
+      <span class="text-xs text-gray-500">${timestamp}</span>
+    </div>
+    <p class="text-sm text-gray-800">${escapeHtml(message.message)}</p>
+  `;
+  
+  chatMessages.appendChild(messageDiv);
+  
+  // Scroll to bottom
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function displayChatMessages(messages) {
+  const chatMessages = document.getElementById('chat-messages');
+  const welcomeMessage = chatMessages.querySelector('.text-center');
+  
+  // Clear existing messages but keep welcome message
+  const existingMessages = chatMessages.querySelectorAll('.chat-message');
+  existingMessages.forEach(msg => msg.remove());
+  
+  messages.forEach(message => {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message mb-3 p-3 bg-white border border-gray-200 rounded';
+    
+    const timestamp = new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    messageDiv.innerHTML = `
+      <div class="flex justify-between items-start mb-1">
+        <span class="font-semibold text-orange-600">${escapeHtml(message.username)}</span>
+        <span class="text-xs text-gray-500">${timestamp}</span>
+      </div>
+      <p class="text-sm text-gray-800">${escapeHtml(message.message)}</p>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+  });
+  
+  // Scroll to bottom
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function sendChatMessage() {
+  if (!supabaseClient) {
+    alert('Chat service not ready. Please try again.');
+    return;
+  }
+  
+  const usernameInput = document.getElementById('chat-username');
+  const messageInput = document.getElementById('chat-message-input');
+  const sendBtn = document.getElementById('send-message-btn');
+  
+  const username = usernameInput.value.trim();
+  const message = messageInput.value.trim();
+  
+  if (!username) {
+    alert('Please enter your name first!');
+    usernameInput.focus();
+    return;
+  }
+  
+  if (!message) {
+    alert('Please enter a message!');
+    messageInput.focus();
+    return;
+  }
+  
+  // Disable send button temporarily
+  sendBtn.disabled = true;
+  sendBtn.textContent = 'Sending...';
+  
+  try {
+    const { data, error } = await supabaseClient
+      .from('chat_messages')
+      .insert([
+        {
+          username: username,
+          message: message
+        }
+      ]);
+    
+    if (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+      return;
+    }
+    
+    messageInput.value = '';
+    console.log('Message sent successfully');
+    // No need to reload messages, real-time subscription will handle it
+  } catch (error) {
+    console.error('Error sending message:', error);
+    alert('Failed to send message. Please try again.');
+  } finally {
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Send';
+  }
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Add Enter key support for chat
+document.addEventListener('DOMContentLoaded', () => {
+  const messageInput = document.getElementById('chat-message-input');
+  if (messageInput) {
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
+    });
+  }
+});
 
 // Make functions globally accessible
 window.viewPhoto = viewPhoto;
@@ -398,3 +675,5 @@ window.navigateToDocuments = navigateToDocuments;
 window.navigateToPictures = navigateToPictures;
 window.navigateBack = navigateBack;
 window.copyContractAddress = copyContractAddress;
+window.loadChatMessages = loadChatMessages;
+window.sendChatMessage = sendChatMessage;
