@@ -1,0 +1,22 @@
+---
+// Componente de la barra de tareas
+---
+
+<!-- Taskbar -->
+<div class="absolute bottom-0 left-0 right-0 h-12 bg-[#ff980d] border-t-2 border-black flex items-center px-2 z-20">
+  <!-- Start Button -->
+  <button id="start-button" class="bg-[#ff980d] border-2 border-black px-4 text-black font-bold hover:scale-105 transition-all">
+    <img src="/orange.png" alt="start" class="w-8 h-8">
+  </button>
+  
+  <!-- Separator -->
+  <div class="w-px h-8 bg-black mx-2"></div>
+  
+  <!-- Open Applications -->
+  <div id="taskbar-apps" class="flex-1 flex gap-1"></div>
+  
+  <!-- Clock -->
+  <div class="bg-[#ff980d] border-2 border-black px-3 py-1">
+    <span id="clock" class="text-black text-sm font-mono"></span>
+  </div>
+</div>
