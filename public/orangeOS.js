@@ -1,6 +1,6 @@
 // Orange-OS Main Application Logic
 // Global contract address variable
-const CONTRACT_ADDRESS = "CA WILL UPDATE SOON"; // Replace with actual contract address
+const CONTRACT_ADDRESS = "FTG5rxw2aJghLhrNzY3f6qr5v3yvcsMQfKJcqXrMpump"; // Replace with actual contract address
 
 class OrangeOS {
   constructor() {
