@@ -261,7 +261,7 @@ class TrollOS {
         window.open(`https://dexscreener.com/solana/${CONTRACT_ADDRESS}`, '_blank');
         break;
       case 'twitter':
-        window.open('https://x.com/trollos_', '_blank');
+        window.open('https://x.com/i/communities/1959130032041083321', '_blank');
         break;
       case 'telegram':
         this.openWindow('telegram-window');
