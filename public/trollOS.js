@@ -98,6 +98,13 @@ class TrollOS {
         this.mainScreen.offsetHeight;
         this.mainScreen.style.opacity = '1';
         
+        // Show sound modal after desktop is visible
+        setTimeout(() => {
+          if (window.soundModal) {
+            window.soundModal.show();
+          }
+        }, 1000);
+        
         // Clock removed - replaced with contract address component
       }, 500);
     }, 4000);
