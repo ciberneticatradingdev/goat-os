@@ -1,6 +1,6 @@
 // Troll-OS Main Application Logic
 // Global contract address variable
-const CONTRACT_ADDRESS = "CA WILL UPDATE SOON | CA WILL UPDATE SOON"; // Replace with actual contract address
+const CONTRACT_ADDRESS = "mYxWP7gRgNR2aym5tRfa4XfMaWPBbcoQMVM2Zaipump"; // Replace with actual contract address
 
 class TrollOS {
   constructor() {
@@ -324,7 +324,7 @@ class TrollOS {
 
 // Photo navigation variables
 let currentPhotoIndex = 1;
-const totalPhotos = 13;
+const totalPhotos = 15;
 
 // Photo viewer functions
 function viewPhoto(imageSrc, photoIndex) {
@@ -485,7 +485,7 @@ function copyContractAddress() {
     // Show a brief notification
     const notification = document.createElement('div');
     notification.textContent = 'Contract address copied!';
-    notification.style.cssText = 'position: fixed; bottom: 4rem; right: 1rem; background-color: #ff9b05; color: black; padding: 0.5rem 1rem; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 999999; transition: opacity 0.3s; font-family: system-ui, -apple-system, sans-serif; border: 2px solid black;';
+    notification.style.cssText = 'position: fixed; bottom: 4rem; right: 1rem; background-color: white; color: black; padding: 0.5rem 1rem; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 999999; transition: opacity 0.3s; font-family: system-ui, -apple-system, sans-serif; border: 2px solid black;';
     document.body.appendChild(notification);
     
     // Remove notification after 2 seconds
