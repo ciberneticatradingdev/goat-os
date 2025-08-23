@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Supabase Realtime</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase Realtime Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+    
+    <input type="text" id="testMessage" placeholder="Test message">
+    <button onclick="sendTestMessage()">Send Test</button>
+    
+    <script>
+        const SUPABASE_URL = 'https://zfasxsiqjlxjaqojtvzt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmYXN4c2lxamx4amFxb2p0dnp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NTQ2NzEsImV4cCI6MjA3MDEzMDY3MX0.skvv6gB0mulDoZ-v-lcSf_2MNbZrWkAYM2lQeNW9nNQ';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            realtime: {
+                params: {
+                    eventsPerSecond: 10
+                }
+            }
+        });
+        
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+        
+        function log(message) {
+            console.log(message);
+            messagesDiv.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+        }
+        
+        // Test connection
+        async function testConnection() {
+            try {
+                const { data, error } = await supabase
+                    .from('chat_messages')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) {
+                    log('❌ Connection test failed: ' + error.message);
+                    statusDiv.textContent = 'Connection failed';
+                } else {
+                    log('✅ Connection test successful');
+                    statusDiv.textContent = 'Connected';
+                    setupRealtime();
+                }
+            } catch (error) {
+                log('❌ Connection error: ' + error.message);
+                statusDiv.textContent = 'Connection error';
+            }
+        }
+        
+        // Setup realtime subscription
+        function setupRealtime() {
+            log('🔗 Setting up realtime subscription...');
+            
+            const channel = supabase
+                .channel('test_chat_channel')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'chat_messages'
+                    },
+                    (payload) => {
+                        log('📨 New message received: ' + JSON.stringify(payload.new));
+                    }
+                )
+                .on('error', (error) => {
+                    log('❌ Realtime error: ' + error.message);
+                })
+                .subscribe((status, error) => {
+                    log('📡 Subscription status: ' + status);
+                    if (error) {
+                        log('❌ Subscription error: ' + error.message);
+                    }
+                    if (status === 'SUBSCRIBED') {
+                        log('✅ Successfully subscribed to realtime updates');
+                        statusDiv.textContent = 'Realtime active';
+                    } else if (status === 'CHANNEL_ERROR') {
+                        log('❌ Channel error - realtime may not be enabled');
+                        statusDiv.textContent = 'Realtime error';
+                    } else if (status === 'TIMED_OUT') {
+                        log('❌ Subscription timed out');
+                        statusDiv.textContent = 'Timeout';
+                    }
+                });
+        }
+        
+        // Send test message
+        async function sendTestMessage() {
+            const input = document.getElementById('testMessage');
+            const message = input.value.trim();
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            try {
+                log('📤 Sending test message: ' + message);
+                const { data, error } = await supabase
+                    .from('chat_messages')
+                    .insert([
+                        {
+                            username: 'Test User',
+                            message: message
+                        }
+                    ]);
+                
+                if (error) {
+                    log('❌ Error sending message: ' + error.message);
+                } else {
+                    log('✅ Message sent successfully');
+                    input.value = '';
+                }
+            } catch (error) {
+                log('❌ Send error: ' + error.message);
+            }
+        }
+        
+        // Start test
+        testConnection();
+    </script>
+</body>
+</html>
