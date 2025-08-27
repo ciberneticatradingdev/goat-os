@@ -1,6 +1,18 @@
 // Goat-OS Main Application Logic
+// External links configuration (centralized)
+const EXTERNAL_LINKS = {
+  BUY: 'https://pump.fun',
+  DEXSCREENER: 'https://dexscreener.com',
+  TWITTER_COMMUNITY: 'https://x.com/i/communities/1959130032041083321'
+};
+
+// Contract information
+const CONTRACT_INFO = {
+  ADDRESS: 'CA WILL UPDATE SOON| CA WILL UPDATE SOON'
+};
+
 // Global contract address variable
-const CONTRACT_ADDRESS = "CA WILL UPDATE SOON| CA WILL UPDATE SOON"; // Replace with actual contract address
+const CONTRACT_ADDRESS = CONTRACT_INFO.ADDRESS;
 
 class GoatOS {
   constructor() {
@@ -261,10 +273,10 @@ class GoatOS {
         alert(`${this.getAppDisplayName(appName)} - This feature is not implemented yet.`);
         break;
       case 'dexscreener':
-        window.open(`https://dexscreener.com/solana/${CONTRACT_ADDRESS}`, '_blank');
+        window.open(`${EXTERNAL_LINKS.DEXSCREENER}/solana/${CONTRACT_ADDRESS}`, '_blank');
         break;
       case 'twitter':
-        window.open('https://x.com/i/communities/1959130032041083321', '_blank');
+        window.open(EXTERNAL_LINKS.TWITTER_COMMUNITY, '_blank');
         break;
       case 'telegram':
         this.openWindow('telegram-window');

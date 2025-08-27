@@ -176,12 +176,9 @@
               
               // Start playing goat.mp3 in loop after successful login
               setTimeout(() => {
-                const audio = new Audio('/goat.mp3');
-                audio.loop = true;
-                audio.volume = 0.5;
-                audio.play().catch(error => {
-                  console.log('Audio autoplay prevented:', error);
-                });
+                if (typeof (window as any).playBackgroundMusic === 'function') {
+                  (window as any).playBackgroundMusic();
+                }
               }, 500);
             }, 50);
           }

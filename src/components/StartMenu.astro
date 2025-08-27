@@ -1,5 +1,6 @@
 ---
 // Componente del menú de inicio
+import { BUY, TWITTER, DEXSCREENER } from '../utils.ts';
 ---
 
 <!-- Start Menu (hidden by default) -->
@@ -8,14 +9,14 @@
     <span class="text-black font-bold">GOAT-OS</span>
   </div>
   <div class="p-2 space-y-1">
-    <div class="menu-item p-2 hover:bg-gray-100 cursor-pointer text-black border border-transparent hover:border-black" data-app="mydocuments">
-      📁 My Documents
-    </div>
-    <div class="menu-item p-2 hover:bg-gray-100 cursor-pointer text-black border border-transparent hover:border-black" data-app="media">
-      🖼️ Media
-    </div>
-    <div class="menu-item p-2 hover:bg-gray-100 cursor-pointer text-black border border-transparent hover:border-black" data-app="myvideos">
-      🎬 My Videos
-    </div>
+    <a href="#" class="menu-item p-2 hover:bg-gray-100 cursor-pointer text-black border border-transparent hover:border-black block" onclick={`window.open('${BUY}', '_blank')`}>
+      💰 Buy
+    </a>
+    <a href="#" class="menu-item p-2 hover:bg-gray-100 cursor-pointer text-black border border-transparent hover:border-black block" onclick={`window.open('${TWITTER}', '_blank')`}>
+      🐦 X
+    </a>
+    <a href="#" class="menu-item p-2 hover:bg-gray-100 cursor-pointer text-black border border-transparent hover:border-black block" onclick={`window.open('${DEXSCREENER}', '_blank')`}>
+      📊 Dexscreener
+    </a>
   </div>
 </div>
