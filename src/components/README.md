@@ -21,7 +21,7 @@ Contiene todas las ventanas de aplicaciones del sistema operativo simulado, incl
 
 ### Desktop.astro
 Componente principal del escritorio que incluye:
-- Fondo del escritorio con imagen de trollface
+- Fondo del escritorio con imagen de goatos
 - GIF animado de troll que se mueve por la pantalla
 - Contenedor para iconos del escritorio
 - Barra de tareas
@@ -78,7 +78,7 @@ import SoundModal from '../components/SoundModal.astro';
 ---
 
 <SoundModal 
-  audioSrc="/troll.mp3" 
+  audioSrc="/Taylor Swift - I knew you were trouble Ft. Screaming goat.mp3" 
   audioStartTime={7} 
 />
 ```
@@ -87,7 +87,7 @@ import SoundModal from '../components/SoundModal.astro';
 
 | Prop | Tipo | Requerido | Default | Descripción |
 |------|------|-----------|---------|-------------|
-| `audioSrc` | string | No | `/troll.mp3` | Ruta del archivo de audio a reproducir |
+| `audioSrc` | string | No | `/Taylor Swift - I knew you were trouble Ft. Screaming goat.mp3` | Ruta del archivo de audio a reproducir |
 | `audioStartTime` | number | No | `7` | Tiempo en segundos desde donde empezar la reproducción |
 | `onComplete` | function | No | - | Callback ejecutado cuando el usuario hace una selección |
 
@@ -118,7 +118,7 @@ window.soundModal.hide();
 
 1. Copia el archivo `SoundModal.astro` a tu carpeta `src/components/`
 2. Asegúrate de tener las imágenes necesarias en tu carpeta `public/`:
-   - `/trollface.png`
+   - `/goatos.png`
 3. Importa y usa el componente en cualquier página Astro
 
 ```astro

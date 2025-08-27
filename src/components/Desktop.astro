@@ -1,43 +1,29 @@
 ---
 // Componente del escritorio principal
-import DesktopIcons from './DesktopIcons.astro';
 import Taskbar from './Taskbar.astro';
 import StartMenu from './StartMenu.astro';
 import ApplicationWindows from './ApplicationWindows.astro';
 ---
 
 <!-- Main screen - Windows XP style desktop -->
-<div id="main-screen" class="hidden min-h-screen w-screen bg-white relative overflow-hidden">
-  <!-- Background Troll -->
-  <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-    <img src="/trollface.png" alt="trollface" class="w-40 h-40 opacity-20">
-  </div>
-  
-  <!-- Desktop Icons -->
-  <DesktopIcons />
-  
-  <!-- Animated Troll GIF -->
-  <div class="absolute bottom-32 left-0 w-full h-16 pointer-events-none z-15">
-    <img id="troll-gif" src="/troll.gif" alt="Troll" class="absolute w-32 animate-troll">
-  </div>
+<div id="main-screen" class="hidden min-h-screen bg-[url('/goat.gif')] bg-left bg-cover w-screen bg-white relative overflow-hidden">
+
   
   <!-- Taskbar -->
   <Taskbar />
   
   <!-- Start Menu -->
   <StartMenu />
-  
-  <!-- Application Windows -->
-  <ApplicationWindows />
+
 </div>
 
 <style>
-  @keyframes trollMove {
+  @keyframes goatMove {
     0% { left: -60px; }
     100% { left: calc(100% + 60px); }
   }
 
-  .animate-troll {
-    animation: trollMove 8s linear infinite;
+  .animate-goat {
+    animation: goatMove 8s linear infinite;
   }
 </style>

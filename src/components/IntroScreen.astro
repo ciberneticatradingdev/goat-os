@@ -2,19 +2,11 @@
 // Componente de pantalla de introducción
 ---
 
-<div id="intro-screen" class="min-h-screen w-screen flex flex-col items-center justify-center bg-white pt-20">
-  <img src="/trollface.png" class="w-80 mb-16" alt="troll" />
-  <text class="title text-black text-5xl text-center">Troll-OS</text>
-  <text class="subtitle text-black text-5xl text-center">Alpha Release 0.01</text>
-
-  <div class="loading-spinner text-black text-5xl mb-8" id="loadingSpinner">
-    <span class="spinner-char"></span>
-  </div>
-
-  <div class="flex flex-col flex-1 w-full items-center justify-end pb-8">
-    <text class="text-black text-3xl text-center">Troll-OS (c) Troll Corporation, 2025.</text>
-    <text class="text-black text-3xl text-center">All Rights Reserved. Troll-OS is a registered trademark of Troll Corporation.</text>
-  </div>
+<div id="intro-screen" class="min-h-screen bg-[url('/intro.jpeg')] bg-left bg-cover w-screen flex flex-col items-center justify-center bg-white pt-20 relative">
+  <!-- Background overlay -->
+  <div class="absolute inset-0 bg-black/30"></div>
+  
+  <img src="/goatos2.png" class="w-40 mb-16 breathing-logo relative z-10" alt="daos-svg" />
 </div>
 
 <style>
@@ -60,6 +52,20 @@
 
   .subtitle {
     font-family: 'FSEX302', monospace;
+  }
+
+  /* Breathing animation for the logo */
+  .breathing-logo {
+    animation: breathe 3s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
   }
 
   /* Mobile styles */

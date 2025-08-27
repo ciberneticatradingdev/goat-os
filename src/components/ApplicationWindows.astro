@@ -11,28 +11,91 @@
       <button class="close-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">✕</button>
     </div>
     <div class="window-content p-2" style="height: calc(100% - 40px);">
-      <textarea class="w-full h-full border border-gray-300 p-2 resize-none font-mono text-sm">Welcome to TrollOS - The Ultimate Degen Experience 🧌
+      <textarea class="w-full h-full border border-gray-300 p-2 resize-none font-mono text-sm">Welcome to GoatOS - The Ultimate Degen Experience 🐐
 
 You mad bro? This is where legends are born...
 
-TrollOS Features:
+GoatOS Features:
 - Problem? We got solutions 😏
-- Maximum trolling efficiency
+- Maximum goat efficiency
 - Built by degens, for degens
 - Powered by pure chaos energy
-- 100% authentic trollface DNA
+- 100% authentic goat DNA
 
 "The internet is serious business" - NOT! 🤡
 
-In TrollOS we trust. In normies we laugh.
-Stay mad, stay based, stay trolling.
+In GoatOS we trust. In normies we laugh.
+Stay mad, stay based, stay goating.
 
 Remember: If you're not having fun, you're doing it wrong.
 
-Type your most degenerate thoughts below... 👹</textarea>
+Type your most degenerate thoughts below... 🐐</textarea>
     </div>
   </div>
   
+  <!-- Media Window -->
+  <div id="media-window" class="window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[500px] md:h-[350px] w-[95vw] h-[80vh] md:top-[50px] md:left-[50px] top-[10vh] left-[2.5vw]">
+    <div class="window-header bg-gray-200 border-b-2 border-black p-2 flex justify-between items-center cursor-move">
+      <span class="text-black font-bold">Media</span>
+      <div class="flex gap-1">
+        <button class="minimize-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">−</button>
+        <button class="close-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">✕</button>
+      </div>
+    </div>
+    <div class="window-content" style="height: calc(100% - 40px); overflow-y: auto;">
+      <div class="p-4">
+        <!-- Pictures View -->
+        <div class="grid grid-cols-4 gap-2">
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/1.jpeg', 1)">
+            <img src="/mypictures/1.jpeg" alt="Photo 1" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/2.jpeg', 2)">
+            <img src="/mypictures/2.jpeg" alt="Photo 2" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/3.jpeg', 3)">
+            <img src="/mypictures/3.jpeg" alt="Photo 3" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/4.jpeg', 4)">
+            <img src="/mypictures/4.jpeg" alt="Photo 4" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/5.jpeg', 5)">
+            <img src="/mypictures/5.jpeg" alt="Photo 5" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/6.jpeg', 6)">
+            <img src="/mypictures/6.jpeg" alt="Photo 6" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/7.jpeg', 7)">
+            <img src="/mypictures/7.jpeg" alt="Photo 7" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/8.jpeg', 8)">
+            <img src="/mypictures/8.jpeg" alt="Photo 8" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/9.jpeg', 9)">
+            <img src="/mypictures/9.jpeg" alt="Photo 9" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/10.jpeg', 10)">
+            <img src="/mypictures/10.jpeg" alt="Photo 10" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/11.jpeg', 11)">
+            <img src="/mypictures/11.jpeg" alt="Photo 11" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/12.jpeg', 12)">
+            <img src="/mypictures/12.jpeg" alt="Photo 12" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/13.jpeg', 13)">
+            <img src="/mypictures/13.jpeg" alt="Photo 13" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/14.jpeg', 14)">
+            <img src="/mypictures/14.jpeg" alt="Photo 14" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+          <div class="cursor-pointer hover:opacity-75" onclick="viewPhoto('/mypictures/15.jpeg', 15)">
+            <img src="/mypictures/15.jpeg" alt="Photo 15" class="w-full h-20 object-cover border border-gray-300">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- My Computer Window -->
   <div id="mycomputer-window" class="hidden window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[500px] md:h-[350px] w-[95vw] h-[80vh] md:top-[80px] md:left-[150px] top-[10vh] left-[2.5vw]">
     <div class="window-header bg-gray-200 border-b-2 border-black p-2 flex justify-between items-center cursor-move">
@@ -195,16 +258,16 @@ Type your most degenerate thoughts below... 👹</textarea>
     <div class="window-content" style="height: calc(100% - 40px); overflow-y: auto;">
       <div class="bg-gray-100 border-b border-gray-300 p-2">
         <div class="flex items-center gap-2">
-          <input type="text" class="flex-1 border border-gray-300 px-2 py-1" value="https://troll-os.fun" readonly>
+          <input type="text" class="flex-1 border border-gray-300 px-2 py-1" value="https://goat-os.fun" readonly>
           <button class="bg-gray-200 text-black px-3 py-1 border border-gray-300 hover:bg-gray-300">Go</button>
         </div>
       </div>
       <div class="p-8 text-center">
         <div class="mt-4">
           <div class="bg-gray-100 border border-gray-300 p-4 rounded">
-          <img src="/trollface.png" alt="Troll" class="w-16 h-16 mx-auto mb-4">
-          <h2 class="font-bold">This is Troll Era</h2>
-          <p>This is Troll OS - Experience the power of the troll revolution!</p>
+          <img src="/goatos.png" alt="Goat" class="w-16 h-16 mx-auto mb-4">
+          <h2 class="font-bold">This is Goat Era</h2>
+          <p>This is Goat OS - Experience the power of the goat revolution!</p>
           </div>
         </div>
       </div>
@@ -229,13 +292,13 @@ Type your most degenerate thoughts below... 👹</textarea>
   <!-- DexScreener Window -->
   <div id="dexscreener-window" class="hidden window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[500px] md:h-[400px] w-[95vw] h-[80vh] md:top-[100px] md:left-[300px] top-[10vh] left-[2.5vw]">
     <div class="window-header bg-gray-200 border-b-2 border-black p-2 flex justify-between items-center cursor-move">
-      <span class="text-black font-bold">📊 DexScreener - TrollOS</span>
+      <span class="text-black font-bold">📊 DexScreener - GoatOS</span>
       <button class="close-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">✕</button>
     </div>
     <div class="window-content p-4">
       <div class="mb-4">
         <div class="bg-gray-100 p-3 border border-gray-300 rounded">
-          <h3 class="font-bold text-lg mb-2">TrollOS Token (TROLL)</h3>
+          <h3 class="font-bold text-lg mb-2">GoatOS Token (GOAT)</h3>
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span class="font-semibold">Price:</span> $0.00001337
@@ -264,7 +327,7 @@ Type your most degenerate thoughts below... 👹</textarea>
   <!-- Twitter Window -->
   <div id="twitter-window" class="hidden window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[450px] md:h-[350px] w-[95vw] h-[80vh] md:top-[120px] md:left-[350px] top-[10vh] left-[2.5vw]">
     <div class="window-header bg-gray-200 border-b-2 border-black p-2 flex justify-between items-center cursor-move">
-      <span class="text-black font-bold">🐦 X/Twitter - @TrollOS</span>
+      <span class="text-black font-bold">🐦 X/Twitter - @GoatOS</span>
       <button class="close-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">✕</button>
     </div>
     <div class="window-content p-4">
@@ -272,18 +335,18 @@ Type your most degenerate thoughts below... 👹</textarea>
         <div class="bg-blue-50 p-3 border border-blue-200 rounded">
           <div class="flex items-center mb-2">
             <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">T</div>
-            <span class="font-bold">@TrollOS</span>
+            <span class="font-bold">@GoatOS</span>
             <span class="text-gray-500 text-sm ml-2">• 2h</span>
           </div>
-          <p class="text-sm">🧌 Welcome to TrollOS Alpha! The most based operating system in crypto! #TrollOS #Memecoin</p>
+          <p class="text-sm">🐐 Welcome to GoatOS Alpha! The most based operating system in crypto! #GoatOS #Memecoin</p>
         </div>
         <div class="bg-blue-50 p-3 border border-blue-200 rounded">
           <div class="flex items-center mb-2">
             <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">T</div>
-            <span class="font-bold">@TrollOS</span>
+            <span class="font-bold">@GoatOS</span>
             <span class="text-gray-500 text-sm ml-2">• 4h</span>
           </div>
-          <p class="text-sm">GM frens! 🌅 Ready to troll the markets today? 😈</p>
+          <p class="text-sm">GM frens! 🌅 Ready to goat the markets today? 🐐</p>
         </div>
       </div>
     </div>
@@ -292,13 +355,13 @@ Type your most degenerate thoughts below... 👹</textarea>
   <!-- Telegram Window -->
   <div id="telegram-window" class="hidden window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[400px] md:h-[350px] w-[95vw] h-[80vh] md:top-[140px] md:left-[400px] top-[10vh] left-[2.5vw]">
     <div class="window-header bg-gray-200 border-b-2 border-black p-2 flex justify-between items-center cursor-move">
-      <span class="text-black font-bold">✈️ Telegram - TrollOS Community</span>
+      <span class="text-black font-bold">✈️ Telegram - GoatOS Community</span>
       <button class="close-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">✕</button>
     </div>
     <div class="window-content p-4">
       <div class="space-y-3">
         <div class="bg-blue-100 p-2 rounded text-sm">
-          <span class="font-semibold text-blue-800">Admin:</span> Welcome to TrollOS official chat! 🧌
+          <span class="font-semibold text-blue-800">Admin:</span> Welcome to GoatOS official chat! 🐐
         </div>
         <div class="bg-gray-100 p-2 rounded text-sm">
           <span class="font-semibold">CryptoTroll:</span> Wen moon? 🚀
@@ -328,7 +391,7 @@ Type your most degenerate thoughts below... 👹</textarea>
     <div class="window-content p-4">
       <div class="space-y-4">
         <div>
-          <h3 class="font-bold mb-2">TrollOS Token Contract</h3>
+          <h3 class="font-bold mb-2">GoatOS Token Contract</h3>
           <div class="bg-gray-100 p-3 border border-gray-300 rounded">
             <p class="text-xs font-mono break-all" id="contract-address-display"></p>
             <button class="mt-2 bg-blue-500 text-white px-3 py-1 text-xs rounded" id="copy-contract-btn">Copy Address</button>
@@ -337,10 +400,10 @@ Type your most degenerate thoughts below... 👹</textarea>
         <div>
           <h4 class="font-semibold mb-2">Token Details:</h4>
           <ul class="text-sm space-y-1">
-            <li><span class="font-semibold">Name:</span> TrollOS</li>
-            <li><span class="font-semibold">Symbol:</span> TROLL</li>
+            <li><span class="font-semibold">Name:</span> GoatOS</li>
+            <li><span class="font-semibold">Symbol:</span> GOAT</li>
             <li><span class="font-semibold">Decimals:</span> 18</li>
-            <li><span class="font-semibold">Total Supply:</span> 1,000,000,000 TROLL</li>
+            <li><span class="font-semibold">Total Supply:</span> 1,000,000,000 GOAT</li>
           </ul>
         </div>
       </div>
@@ -348,16 +411,16 @@ Type your most degenerate thoughts below... 👹</textarea>
   </div>
 
   <!-- Chat Window -->
-  <div id="chat-window" class="hidden window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[500px] md:h-[400px] w-[95vw] h-[80vh] md:top-[80px] md:left-[180px] top-[10vh] left-[2.5vw]">
+  <div id="chat-window" class="window absolute bg-white border-2 border-black shadow-lg pointer-events-auto md:w-[500px] md:h-[400px] w-[95vw] h-[80vh] md:top-[380px] md:left-[20px] top-[50vh] left-[2.5vw]">
     <div class="window-header bg-gray-200 border-b-2 border-black p-2 flex justify-between items-center cursor-move">
-      <span class="text-black font-bold">💬 TrollOS Chat</span>
+      <span class="text-black font-bold">💬 GoatOS Chat</span>
       <button class="close-btn border border-black bg-white text-black px-2 py-1 text-xs hover:scale-105 transition-all">✕</button>
     </div>
     <div class="window-content flex flex-col" style="height: calc(100% - 40px);">
       <!-- Chat Messages Area -->
       <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50 border-b border-gray-300">
         <div class="text-center text-gray-500 text-sm mb-4">
-          <p>Welcome to TrollOS Chat! 🧌</p>
+          <p>Welcome to GoatOS Chat! 🐐</p>
           <p>Share your thoughts with the community</p>
         </div>
         <!-- Messages will be dynamically added here -->

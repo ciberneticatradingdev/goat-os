@@ -1,8 +1,8 @@
-// Troll-OS Main Application Logic
+// Goat-OS Main Application Logic
 // Global contract address variable
-const CONTRACT_ADDRESS = "mYxWP7gRgNR2aym5tRfa4XfMaWPBbcoQMVM2Zaipump"; // Replace with actual contract address
+const CONTRACT_ADDRESS = "CA WILL UPDATE SOON| CA WILL UPDATE SOON"; // Replace with actual contract address
 
-class TrollOS {
+class GoatOS {
   constructor() {
     this.openWindows = new Set();
     this.zIndexCounter = 1000;
@@ -84,28 +84,25 @@ class TrollOS {
   }
 
   startIntroSequence() {
-    // After 4 seconds, show desktop directly
+    // After 4 seconds, show login screen
     setTimeout(() => {
       this.introScreen.style.transition = 'opacity 0.5s ease-out';
       this.introScreen.style.opacity = '0';
       
       setTimeout(() => {
         this.introScreen.style.display = 'none';
-        this.mainScreen.classList.remove('hidden');
-        this.mainScreen.style.opacity = '0';
-        this.mainScreen.style.transition = 'opacity 0.5s ease-in';
         
-        this.mainScreen.offsetHeight;
-        this.mainScreen.style.opacity = '1';
-        
-        // Show sound modal after desktop is visible
-        setTimeout(() => {
-          if (window.soundModal) {
-            window.soundModal.show();
-          }
-        }, 1000);
-        
-        // Clock removed - replaced with contract address component
+        // Show login screen
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) {
+          loginScreen.classList.remove('hidden');
+          loginScreen.style.opacity = '0';
+          loginScreen.style.transition = 'opacity 0.5s ease-in';
+          
+          setTimeout(() => {
+            loginScreen.style.opacity = '1';
+          }, 50);
+        }
       }, 500);
     }, 4000);
   }
@@ -178,6 +175,8 @@ class TrollOS {
       'internet': 'Internet Explorer',
       'recycle': 'Recycle Bin',
       'mydocuments': 'My Documents',
+      'media': 'Media',
+      'mypictures': 'My Pictures',
       'myvideos': 'My Videos',
       'controlpanel': 'Control Panel',
       'search': 'Search',
@@ -187,7 +186,7 @@ class TrollOS {
       'telegram': 'Telegram',
       'contract': 'Contract Info',
       'chat': 'Chat',
-      'trollteaser': 'Troll Era Teaser'
+      'goatteaser': 'Goat Era Teaser'
     };
     return names[appName] || appName;
   }
@@ -243,6 +242,10 @@ class TrollOS {
       case 'mydocuments':
         this.openWindow('mycomputer-window');
         setTimeout(() => navigateToDocuments(), 300);
+        break;
+      case 'media':
+        this.openWindow('mycomputer-window');
+        setTimeout(() => navigateToPictures(), 300);
         break;
       case 'mypictures':
         this.openWindow('mycomputer-window');
@@ -310,8 +313,8 @@ class TrollOS {
         this.openWindow('chat-window');
         loadChatMessages();
         break;
-      case 'orangeteaser':
-        this.openWindow('orangeteaser-window');
+      case 'goatteaser':
+        this.openWindow('goatteaser-window');
         break;
       default:
         this.openWindow(appName + '-window');
@@ -320,7 +323,7 @@ class TrollOS {
   }
 }
 
-// Initialize Troll-OS
+// Initialize Goat-OS
 
 // Photo navigation variables
 let currentPhotoIndex = 1;
@@ -440,7 +443,7 @@ function navigateToPictures() {
   videosView.classList.add('hidden');
   picturesView.classList.remove('hidden');
   backBtn.classList.remove('hidden');
-  title.textContent = 'My Pictures';
+  title.textContent = 'Media';
 }
 
 function navigateToVideos() {
@@ -475,7 +478,7 @@ function navigateBack() {
   title.textContent = 'My Computer';
 }
 
-const trollOS = new TrollOS();
+const goatOS = new GoatOS();
 
 // Contract address function
 function copyContractAddress() {
