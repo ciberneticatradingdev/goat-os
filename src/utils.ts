@@ -3,8 +3,8 @@
 
 export const EXTERNAL_LINKS = {
   // Trading & DEX Links
-  BUY: 'https://pump.fun/coin/CA WILL UPDATE SOON| CA WILL UPDATE SOON',
-  DEXSCREENER: 'https://dexscreener.com/solana/CA WILL UPDATE SOON| CA WILL UPDATE SOON',
+  BUY: 'https://pump.fun/coin/9G3Q9Hxpebi36YzqnGsbf5ZDyCd6hDGMXJXAN7qLpump',
+  DEXSCREENER: 'https://dexscreener.com/solana/9G3Q9Hxpebi36YzqnGsbf5ZDyCd6hDGMXJXAN7qLpump',
   DEXSCREENER_TOKEN: (contractAddress: string) => `https://dexscreener.com/solana/${contractAddress}`,
   
   // Social Media Links
@@ -27,7 +27,7 @@ export const EXTERNAL_LINKS = {
 // Contract Information
 export const CONTRACT_INFO = {
   // This should be updated with the actual contract address
-  ADDRESS: 'CA WILL UPDATE SOON| CA WILL UPDATE SOON', // Will be set dynamically or from environment
+  ADDRESS: '9G3Q9Hxpebi36YzqnGsbf5ZDyCd6hDGMXJXAN7qLpump', // Will be set dynamically or from environment
   NETWORK: 'solana'
 };
 

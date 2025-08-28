@@ -8,7 +8,7 @@ const EXTERNAL_LINKS = {
 
 // Contract information
 const CONTRACT_INFO = {
-  ADDRESS: 'CA WILL UPDATE SOON| CA WILL UPDATE SOON'
+  ADDRESS: '9G3Q9Hxpebi36YzqnGsbf5ZDyCd6hDGMXJXAN7qLpump'
 };
 
 // Global contract address variable
