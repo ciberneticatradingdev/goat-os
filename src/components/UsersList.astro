@@ -1,0 +1,789 @@
+---
+// UsersList.astro - Connected users display component for GOAT-OS Communication Hub
+---
+
+<div id="users-list" class="users-list">
+  <!-- Users Header -->
+  <div class="users-header">
+    <div class="users-title">
+      <span class="users-icon">👥</span>
+      <span>Connected Users</span>
+    </div>
+    <div class="users-count">
+      <span id="total-users-count" class="count-number">0</span>
+      <span class="count-label">online</span>
+    </div>
+  </div>
+
+  <!-- Users Container -->
+  <div class="users-container">
+    <div id="users-list-content" class="users-content">
+      <!-- Users will be dynamically added here -->
+      <div class="no-users-message">
+        <span class="no-users-icon">🤖</span>
+        <span class="no-users-text">No users connected</span>
+        <span class="no-users-subtext">Be the first to join!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Actions -->
+  <div class="user-actions">
+    <button id="refresh-users-btn" class="action-button refresh-button" type="button">
+      <span class="action-icon">🔄</span>
+      <span class="action-text">Refresh</span>
+    </button>
+    
+    <button id="invite-users-btn" class="action-button invite-button" type="button">
+      <span class="action-icon">📨</span>
+      <span class="action-text">Invite</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .users-list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #00ff88;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .users-list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 20, 147, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .users-list > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Users Header */
+  .users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 255, 136, 0.1);
+    border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 6px 6px 0 0;
+  }
+
+  .users-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    color: #00ff88;
+    font-size: 14px;
+  }
+
+  .users-icon {
+    font-size: 16px;
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  .users-count {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .count-number {
+    color: #00ff88;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 0 0 4px currentColor;
+  }
+
+  .count-label {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Users Container */
+  .users-container {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .users-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Custom Scrollbar */
+  .users-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .users-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+
+  .users-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 136, 0.5);
+    border-radius: 3px;
+  }
+
+  .users-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 136, 0.7);
+  }
+
+  /* No Users Message */
+  .no-users-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    gap: 8px;
+  }
+
+  .no-users-icon {
+    font-size: 32px;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .no-users-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .no-users-subtext {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* User Item */
+  .user-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .user-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 255, 136, 0.3);
+    transform: translateX(2px);
+  }
+
+  .user-item.speaking {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+  }
+
+  .user-item.muted {
+    opacity: 0.6;
+  }
+
+  /* User Avatar */
+  .user-avatar {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    flex-shrink: 0;
+  }
+
+  .user-avatar.guest {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: #ffffff;
+  }
+
+  .user-avatar.admin {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #000000;
+  }
+
+  /* Status Indicators */
+  .status-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #1a1a2e;
+  }
+
+  .status-indicator.online {
+    background: #4ade80;
+    box-shadow: 0 0 4px rgba(74, 222, 128, 0.5);
+  }
+
+  .status-indicator.away {
+    background: #fbbf24;
+    box-shadow: 0 0 4px rgba(251, 191, 36, 0.5);
+  }
+
+  .status-indicator.busy {
+    background: #ef4444;
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+  }
+
+  .status-indicator.offline {
+    background: #6b7280;
+  }
+
+  /* User Info */
+  .user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .user-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-name.guest {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .user-name.admin {
+    color: #f59e0b;
+  }
+
+  .user-status {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Voice Indicators */
+  .voice-indicators {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .voice-indicator {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+  }
+
+  .voice-indicator.speaking {
+    background: rgba(0, 255, 136, 0.2);
+    color: #00ff88;
+    animation: pulse-speaking 1s infinite;
+  }
+
+  .voice-indicator.muted {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+
+  .voice-indicator.deafened {
+    background: rgba(107, 114, 128, 0.2);
+    color: #6b7280;
+  }
+
+  /* User Actions */
+  .user-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .action-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .action-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #00ff88;
+    transform: translateY(-1px);
+  }
+
+  .action-button:active {
+    transform: translateY(0);
+  }
+
+  .refresh-button:hover {
+    background: rgba(0, 255, 136, 0.2);
+  }
+
+  .invite-button:hover {
+    background: rgba(255, 20, 147, 0.2);
+  }
+
+  .action-icon {
+    font-size: 14px;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+  }
+
+  .action-text {
+    font-weight: 500;
+  }
+
+  /* Animations */
+  @keyframes pulse-speaking {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .user-item {
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .users-header {
+      padding: 10px 12px;
+    }
+
+    .users-title {
+      font-size: 13px;
+    }
+
+    .users-content {
+      padding: 6px;
+    }
+
+    .user-item {
+      padding: 6px 10px;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+
+    .user-name {
+      font-size: 12px;
+    }
+
+    .user-status {
+      font-size: 10px;
+    }
+
+    .user-actions {
+      padding: 8px 12px;
+      gap: 6px;
+    }
+
+    .action-button {
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+  }
+
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    .users-list {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    }
+
+    .user-item {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .user-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .action-button {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .action-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+</style>
+
+<script>
+  class UsersList {
+    constructor() {
+      this.usersListContent = document.getElementById('users-list-content');
+      this.totalUsersCount = document.getElementById('total-users-count');
+      this.refreshUsersBtn = document.getElementById('refresh-users-btn');
+      this.inviteUsersBtn = document.getElementById('invite-users-btn');
+      
+      this.users = new Map();
+      this.currentUserId = null;
+      
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.loadUsers();
+    }
+
+    setupEventListeners() {
+      // Refresh users button
+      this.refreshUsersBtn?.addEventListener('click', () => {
+        this.refreshUsers();
+      });
+
+      // Invite users button
+      this.inviteUsersBtn?.addEventListener('click', () => {
+        this.inviteUsers();
+      });
+
+      // Listen for user updates from parent component
+      window.addEventListener('users-list-update', (e) => {
+        this.updateUsersList(e.detail.users);
+      });
+
+      window.addEventListener('user-joined', (e) => {
+        this.addUser(e.detail.user);
+      });
+
+      window.addEventListener('user-left', (e) => {
+        this.removeUser(e.detail.userId);
+      });
+
+      window.addEventListener('user-status-changed', (e) => {
+        this.updateUserStatus(e.detail.userId, e.detail.status);
+      });
+
+      window.addEventListener('user-speaking-changed', (e) => {
+        this.updateUserSpeaking(e.detail.userId, e.detail.speaking);
+      });
+
+      window.addEventListener('current-user-changed', (e) => {
+        this.setCurrentUser(e.detail.userId);
+      });
+    }
+
+    loadUsers() {
+      // Dispatch event to parent component to load users
+      window.dispatchEvent(new CustomEvent('users-load-request'));
+    }
+
+    refreshUsers() {
+      // Add refresh animation
+      if (this.refreshUsersBtn) {
+        const icon = this.refreshUsersBtn.querySelector('.action-icon');
+        if (icon) {
+          icon.style.animation = 'none';
+          icon.offsetHeight; // Trigger reflow
+          icon.style.animation = 'spin 1s linear';
+        }
+      }
+      
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('users-refresh-request'));
+      
+      // Remove animation after completion
+      setTimeout(() => {
+        if (this.refreshUsersBtn) {
+          const icon = this.refreshUsersBtn.querySelector('.action-icon');
+          if (icon) {
+            icon.style.animation = '';
+          }
+        }
+      }, 1000);
+    }
+
+    inviteUsers() {
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('users-invite-request'));
+    }
+
+    updateUsersList(users) {
+      this.users.clear();
+      
+      if (!users || users.length === 0) {
+        this.showNoUsersMessage();
+        this.updateUsersCount(0);
+        return;
+      }
+      
+      users.forEach(user => {
+        this.users.set(user.id, user);
+      });
+      
+      this.renderUsers();
+      this.updateUsersCount(users.length);
+    }
+
+    addUser(user) {
+      this.users.set(user.id, user);
+      this.renderUsers();
+      this.updateUsersCount(this.users.size);
+    }
+
+    removeUser(userId) {
+      this.users.delete(userId);
+      
+      if (this.users.size === 0) {
+        this.showNoUsersMessage();
+      } else {
+        this.renderUsers();
+      }
+      
+      this.updateUsersCount(this.users.size);
+    }
+
+    updateUserStatus(userId, status) {
+      const user = this.users.get(userId);
+      if (user) {
+        user.status = status;
+        this.renderUsers();
+      }
+    }
+
+    updateUserSpeaking(userId, speaking) {
+      const user = this.users.get(userId);
+      if (user) {
+        user.speaking = speaking;
+        this.renderUsers();
+      }
+    }
+
+    setCurrentUser(userId) {
+      this.currentUserId = userId;
+      this.renderUsers();
+    }
+
+    showNoUsersMessage() {
+      if (this.usersListContent) {
+        this.usersListContent.innerHTML = `
+          <div class="no-users-message">
+            <span class="no-users-icon">🤖</span>
+            <span class="no-users-text">No users connected</span>
+            <span class="no-users-subtext">Be the first to join!</span>
+          </div>
+        `;
+      }
+    }
+
+    renderUsers() {
+      if (!this.usersListContent) return;
+      
+      const sortedUsers = Array.from(this.users.values()).sort((a, b) => {
+        // Sort by: current user first, then speaking users, then by name
+        if (a.id === this.currentUserId) return -1;
+        if (b.id === this.currentUserId) return 1;
+        if (a.speaking && !b.speaking) return -1;
+        if (!a.speaking && b.speaking) return 1;
+        return (a.name || a.username || 'Anonymous').localeCompare(b.name || b.username || 'Anonymous');
+      });
+      
+      this.usersListContent.innerHTML = sortedUsers.map(user => this.createUserElement(user)).join('');
+      
+      // Add click event listeners to user items
+      this.usersListContent.querySelectorAll('.user-item').forEach((item, index) => {
+        const user = sortedUsers[index];
+        item.addEventListener('click', () => {
+          this.handleUserClick(user);
+        });
+      });
+    }
+
+    createUserElement(user) {
+      const isCurrentUser = user.id === this.currentUserId;
+      const userName = user.name || user.username || 'Anonymous';
+      const userRole = user.role || 'user';
+      const userStatus = user.status || 'online';
+      const isSpeaking = user.speaking || false;
+      const isMuted = user.muted || false;
+      const isDeafened = user.deafened || false;
+      
+      // Generate avatar initials
+      const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      
+      // Determine status text
+      let statusText = '';
+      if (isCurrentUser) {
+        statusText = 'You';
+      } else if (isSpeaking) {
+        statusText = 'Speaking';
+      } else if (isMuted) {
+        statusText = 'Muted';
+      } else {
+        statusText = userStatus.charAt(0).toUpperCase() + userStatus.slice(1);
+      }
+      
+      // Voice indicators
+      let voiceIndicators = '';
+      if (isSpeaking) {
+        voiceIndicators += '<div class="voice-indicator speaking" title="Speaking">🎤</div>';
+      } else if (isMuted) {
+        voiceIndicators += '<div class="voice-indicator muted" title="Muted">🔇</div>';
+      }
+      if (isDeafened) {
+        voiceIndicators += '<div class="voice-indicator deafened" title="Deafened">🔇</div>';
+      }
+      
+      const itemClasses = [
+        'user-item',
+        isSpeaking ? 'speaking' : '',
+        isMuted ? 'muted' : ''
+      ].filter(Boolean).join(' ');
+      
+      return `
+        <div class="${itemClasses}" data-user-id="${user.id}">
+          <div class="user-avatar ${userRole}">
+            ${initials}
+            <div class="status-indicator ${userStatus}"></div>
+          </div>
+          <div class="user-info">
+            <div class="user-name ${userRole}">${userName}${isCurrentUser ? ' (You)' : ''}</div>
+            <div class="user-status">${statusText}</div>
+          </div>
+          <div class="voice-indicators">
+            ${voiceIndicators}
+          </div>
+        </div>
+      `;
+    }
+
+    handleUserClick(user) {
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('user-item-click', {
+        detail: { user }
+      }));
+    }
+
+    updateUsersCount(count) {
+      if (this.totalUsersCount) {
+        this.totalUsersCount.textContent = count.toString();
+      }
+    }
+
+    // Public methods for parent component
+    getUserById(userId) {
+      return this.users.get(userId);
+    }
+
+    getAllUsers() {
+      return Array.from(this.users.values());
+    }
+
+    getUsersCount() {
+      return this.users.size;
+    }
+
+    clearUsers() {
+      this.users.clear();
+      this.showNoUsersMessage();
+      this.updateUsersCount(0);
+    }
+
+    // Utility methods
+    generateGuestName() {
+      const adjectives = ['Cool', 'Epic', 'Mega', 'Super', 'Ultra', 'Hyper', 'Cyber', 'Quantum'];
+      const nouns = ['Goat', 'Trader', 'Hodler', 'Ape', 'Diamond', 'Rocket', 'Moon', 'Lambo'];
+      
+      const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const noun = nouns[Math.floor(Math.random() * nouns.length)];
+      const number = Math.floor(Math.random() * 1000);
+      
+      return `${adjective}${noun}${number}`;
+    }
+  }
+
+  // Add spin animation for refresh button
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      window.usersList = new UsersList();
+    });
+  } else {
+    window.usersList = new UsersList();
+  }
+</script>

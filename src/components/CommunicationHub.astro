@@ -1,0 +1,1573 @@
+---
+// CommunicationHub.astro - Main Communication Hub Component
+// Provides text chat and voice chat functionality with retro GOAT-OS styling
+---
+
+<div id="communication-hub" class="hub-content">
+    <!-- Mobile Navigation (only visible on mobile) -->
+    <div class="mobile-nav">
+      <button class="mobile-nav-btn active" data-panel="chat">
+        💬 Chat
+      </button>
+      <button class="mobile-nav-btn" data-panel="voice">
+        🎤 Voice
+      </button>
+    </div>
+
+    <!-- Text Chat Panel -->
+    <div class="text-chat-panel">
+      <div class="chat-header">
+        <h3>💬 Text Chat</h3>
+        <div class="chat-status">
+          <span class="status-indicator offline" id="chat-status"></span>
+          <span class="status-text">Connecting...</span>
+        </div>
+      </div>
+      
+      <div class="chat-messages" id="chat-messages">
+        <!-- Messages will be populated here -->
+      </div>
+      
+      <div class="chat-input-container">
+        <input 
+          type="text" 
+          id="chat-input" 
+          class="chat-input" 
+          placeholder="Type your message... (Enter to send)"
+          maxlength="500"
+        />
+        <button id="send-btn" class="send-btn" title="Send Message">
+          <span class="send-icon">📤</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <!-- Voice Chat Controls -->
+      <div class="voice-controls">
+        <div class="voice-header">
+          <h3>🎤 Voice Chat</h3>
+          <div class="voice-status">
+            <span class="status-indicator offline" id="voice-status"></span>
+            <span class="status-text" id="voice-status-text">Disconnected</span>
+          </div>
+        </div>
+        
+        <div class="audio-controls">
+          <button id="join-voice-btn" class="voice-btn join-btn">
+            <span class="btn-icon">🎤</span>
+            <span class="btn-text">Join Voice</span>
+          </button>
+          
+          <button id="leave-voice-btn" class="voice-btn leave-btn hidden">
+            <span class="btn-icon">🔇</span>
+            <span class="btn-text">Leave Voice</span>
+          </button>
+          
+          <div class="voice-settings hidden" id="voice-settings">
+            <button id="mute-btn" class="control-btn mute-btn">
+              <span class="btn-icon">🔊</span>
+              <span class="btn-text">Mute</span>
+            </button>
+            
+            <div class="push-to-talk-info">
+              <span class="ptt-label">Push to Talk: SPACE</span>
+            </div>
+            
+            <div class="voice-level">
+              <span class="level-label">Voice Level:</span>
+              <div class="level-bar">
+                <div class="level-fill" id="voice-level-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connected Users List -->
+      <div class="users-list">
+        <div class="users-header">
+          <h3>👥 Connected Users</h3>
+          <span class="user-count" id="user-count">0 online</span>
+        </div>
+        
+        <div class="users-container" id="users-container">
+          <!-- Users will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #communication-hub {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #212529;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  }
+
+  /* Mobile and Tablet Responsive Styles */
+  @media (max-width: 1024px) {
+    .communication-hub {
+      width: 95vw;
+      height: 90vh;
+      max-width: none;
+      max-height: none;
+      margin: 2.5vh auto;
+    }
+
+    .hub-content {
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .text-chat-panel {
+      width: 100%;
+      height: 60%;
+      border-right: none;
+      border-bottom: 1px solid #333;
+    }
+
+    .right-panel {
+      width: 100%;
+      height: 40%;
+      flex-direction: row;
+      gap: 15px;
+    }
+
+    .voice-controls {
+      width: 50%;
+      height: 100%;
+    }
+
+    .connected-users {
+      width: 50%;
+      height: 100%;
+    }
+
+    .chat-input-container {
+      padding: 15px;
+      background: #1a1a1a;
+    }
+
+    .chat-input {
+      font-size: 16px; /* Prevent zoom on iOS */
+      min-height: 44px;
+      -webkit-appearance: none;
+      -webkit-border-radius: 8px;
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .send-btn {
+      min-width: 60px;
+      min-height: 44px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+      background: #005a99;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .communication-hub {
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      border-radius: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .hub-header {
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+
+    .hub-content {
+      flex-direction: column;
+      height: calc(100% - 50px);
+    }
+
+    /* Mobile Navigation Tabs */
+    .mobile-nav {
+      display: flex;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      padding: 15px 0;
+      justify-content: center;
+    }
+
+    .mobile-nav-btn {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 0 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      min-height: 44px;
+      min-width: 80px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.2s;
+    }
+
+    .mobile-nav-btn:active {
+      transform: scale(0.95);
+      background: #555;
+    }
+
+    .mobile-nav-btn.active {
+      background: #007acc;
+    }
+
+    .mobile-nav-btn.active:active {
+      background: #005a99;
+    }
+
+    .mobile-nav-btn:hover {
+      background: #333;
+    }
+
+    /* Mobile Panel Switching */
+    .text-chat-panel {
+      width: 100%;
+      height: calc(100% - 50px);
+      border: none;
+      display: block;
+    }
+
+    .text-chat-panel.mobile-hidden {
+      display: none;
+    }
+
+    .right-panel {
+      width: 100%;
+      height: calc(100% - 50px);
+      flex-direction: column;
+      gap: 0;
+      display: none;
+    }
+
+    .right-panel.mobile-visible {
+      display: flex;
+    }
+
+    .voice-controls {
+      width: 100%;
+      height: 50%;
+      border-bottom: 1px solid #333;
+    }
+
+    .connected-users {
+      width: 100%;
+      height: 50%;
+    }
+
+    /* Mobile Touch Optimizations */
+    .voice-btn {
+      min-height: 44px;
+      min-width: 44px;
+      font-size: 16px;
+      padding: 12px;
+      margin: 5px 0;
+      border-radius: 50%;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .voice-btn:active {
+      transform: scale(0.95);
+    }
+
+    .user-item {
+      padding: 12px;
+      min-height: 48px;
+    }
+
+    .chat-input {
+      font-size: 16px;
+      padding: 15px;
+      min-height: 44px;
+      -webkit-appearance: none;
+      -webkit-border-radius: 8px;
+      border-radius: 8px;
+    }
+
+    .send-btn {
+      min-width: 60px;
+      min-height: 44px;
+      padding: 15px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+      background: #005a99;
+    }
+
+    .message {
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+
+    .message-content {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .message-meta {
+      font-size: 11px;
+    }
+
+    /* Ensure visibility */
+    .communication-hub {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hub-header {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .mobile-nav-btn {
+      padding: 10px 8px;
+      font-size: 12px;
+    }
+
+    .voice-btn {
+      font-size: 14px;
+      padding: 10px 16px;
+    }
+
+    .chat-input {
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .send-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 10px;
+    }
+
+    .message-content {
+      font-size: 13px;
+    }
+
+    .user-item {
+      padding: 10px;
+    }
+  }
+
+  /* Hide desktop-only elements on mobile */
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none !important;
+    }
+  }
+
+  /* Show mobile-only elements */
+  .mobile-nav {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-nav {
+      display: flex;
+    }
+  }
+
+  .hub-content {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .text-chat-panel {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #dee2e6;
+  }
+
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .chat-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .chat-status, .voice-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff4444;
+    animation: blink 1s infinite;
+  }
+
+  .status-indicator.online {
+    background: #28a745;
+    animation: none;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background: #f8f9fa;
+  }
+
+  .message {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #ffffff;
+    border-left: 3px solid #007bff;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    animation: messageSlide 0.3s ease-out;
+  }
+
+  .message.system {
+    background: rgba(255, 215, 0, 0.1);
+    border-left-color: #ffd700;
+    color: #ffd700;
+  }
+
+  @keyframes messageSlide {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  .message-username {
+    font-weight: bold;
+    color: #007bff;
+  }
+
+  .message-time {
+    color: #6c757d;
+    font-size: 10px;
+  }
+
+  .message-content {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .chat-input-container {
+    display: flex;
+    padding: 16px;
+    gap: 8px;
+    background: #ffffff;
+    border-top: 1px solid #dee2e6;
+  }
+
+  .chat-input {
+    flex: 1;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    color: #212529;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+  }
+
+  .chat-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+
+  .chat-input::placeholder {
+    color: #6c757d;
+  }
+
+  .send-btn {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+  }
+
+  .send-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  }
+
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .voice-controls {
+    padding: 16px;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .voice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .voice-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .audio-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .voice-btn {
+    padding: 12px 16px;
+    border: 2px solid #007bff;
+    background: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .voice-btn:hover {
+    background: rgba(0, 123, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  }
+
+  .voice-btn.leave-btn {
+    border-color: #ff4444;
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+  }
+
+  .voice-btn.leave-btn:hover {
+    background: rgba(255, 68, 68, 0.2);
+  }
+
+  .voice-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+
+  .mute-btn {
+    padding: 8px 12px;
+    background: rgba(0, 123, 255, 0.1);
+    border: 1px solid #007bff;
+    border-radius: 6px;
+    color: #007bff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .mute-btn:hover {
+    background: rgba(0, 123, 255, 0.2);
+  }
+
+  .mute-btn.muted {
+    background: rgba(255, 68, 68, 0.1);
+    border-color: #ff4444;
+    color: #ff4444;
+  }
+
+  .push-to-talk-info {
+    text-align: center;
+    font-size: 11px;
+    color: #6c757d;
+    padding: 4px;
+    background: #e9ecef;
+    border-radius: 4px;
+  }
+
+  .voice-level {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .level-bar {
+    flex: 1;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .level-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745 0%, #ffc107 50%, #dc3545 100%);
+    width: 0%;
+    transition: width 0.1s ease;
+  }
+
+  .users-list {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .users-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .user-count {
+    font-size: 12px;
+    color: #6c757d;
+  }
+
+  .users-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .user-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border-radius: 6px;
+    border-left: 3px solid #007bff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    animation: userSlide 0.3s ease-out;
+  }
+
+  .user-item.speaking {
+    background: rgba(255, 193, 7, 0.1);
+    border-left-color: #ffc107;
+    animation: speaking 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes userSlide {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes speaking {
+    from { box-shadow: 0 0 5px rgba(255, 193, 7, 0.3); }
+    to { box-shadow: 0 0 15px rgba(255, 193, 7, 0.6); }
+  }
+
+  .user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  .user-info {
+    flex: 1;
+  }
+
+  .user-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #007bff;
+  }
+
+  .user-status {
+    font-size: 11px;
+    color: #6c757d;
+  }
+
+  .user-voice-indicator {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Scrollbar Styling */
+  .chat-messages::-webkit-scrollbar,
+  .users-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chat-messages::-webkit-scrollbar-track,
+  .users-container::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb,
+  .users-container::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 4px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb:hover,
+  .users-container::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+  }
+
+  /* Mobile and Tablet Responsive Styles */
+  @media (max-width: 768px) {
+    .communication-hub {
+      flex-direction: column;
+    }
+
+    .text-chat-panel {
+      flex: 1;
+      border-right: none;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .right-panel {
+      flex: 0 0 auto;
+      max-height: 200px;
+    }
+
+    .chat-header {
+      padding: 12px;
+    }
+
+    .chat-header h2 {
+      font-size: 16px;
+    }
+
+    .chat-messages {
+      padding: 12px;
+    }
+
+    .message {
+      padding: 8px;
+      margin-bottom: 12px;
+    }
+
+    .message.own {
+      margin-left: 10px;
+    }
+
+    .chat-input-container {
+      padding: 12px;
+      gap: 6px;
+    }
+
+    .chat-input {
+      padding: 8px 10px;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .send-btn {
+      padding: 8px 12px;
+    }
+
+    .voice-controls {
+      padding: 12px;
+    }
+
+    .voice-btn {
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+
+    .users-list {
+      padding: 12px;
+      max-height: 120px;
+    }
+
+    .user-item {
+      padding: 6px 8px;
+    }
+
+    .user-avatar {
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+    }
+
+    .user-name {
+      font-size: 12px;
+    }
+
+    .user-status {
+      font-size: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .window-header {
+      padding: 8px 12px;
+    }
+
+    .window-title {
+      font-size: 14px;
+    }
+
+    .control-btn {
+      width: 16px;
+      height: 16px;
+    }
+
+    .chat-header {
+      padding: 8px;
+    }
+
+    .chat-header h2 {
+      font-size: 14px;
+    }
+
+    .chat-messages {
+      padding: 8px;
+    }
+
+    .message {
+      padding: 6px;
+      margin-bottom: 8px;
+    }
+
+    .message-author {
+      font-size: 12px;
+    }
+
+    .message-content {
+      font-size: 13px;
+    }
+
+    .message-time {
+      font-size: 9px;
+    }
+
+    .chat-input-container {
+      padding: 8px;
+    }
+
+    .voice-controls {
+      padding: 8px;
+    }
+
+    .voice-header h3 {
+      font-size: 12px;
+    }
+
+    .voice-btn {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .users-list {
+      padding: 8px;
+    }
+
+    .users-header h3 {
+      font-size: 12px;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    /* Tablet styles */
+    .communication-hub {
+      flex-direction: row;
+    }
+
+    .text-chat-panel {
+      flex: 1.5;
+    }
+
+    .right-panel {
+      flex: 1;
+    }
+
+    .message {
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+
+    .chat-input {
+      font-size: 15px; /* Prevents zoom on iPad */
+      padding: 12px;
+      min-height: 44px;
+    }
+
+    .send-btn {
+      padding: 12px 16px;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    .voice-btn {
+      min-height: 40px;
+      min-width: 40px;
+      touch-action: manipulation;
+    }
+
+    .voice-btn:active {
+      transform: scale(0.95);
+    }
+  }
+</style>
+
+<script>
+  // CommunicationHub Class - Main controller for the communication hub
+  class CommunicationHub {
+    constructor() {
+      this.isVisible = false;
+      this.isConnected = false;
+      this.currentUser = null;
+      this.supabase = null;
+      this.webrtc = null;
+      this.chatSubscription = null;
+      this.voiceSubscription = null;
+      this.isInVoiceChat = false;
+      this.isMuted = false;
+      this.isPushToTalkActive = false;
+      
+      this.initializeElements();
+      this.setupEventListeners();
+      this.initializeServices();
+    }
+
+    initializeElements() {
+      this.hub = document.getElementById('communication-hub');
+      this.chatMessages = document.getElementById('chat-messages');
+      this.chatInput = document.getElementById('chat-input');
+      this.sendBtn = document.getElementById('send-btn');
+      this.chatStatus = document.getElementById('chat-status');
+      this.voiceStatus = document.getElementById('voice-status');
+      this.voiceStatusText = document.getElementById('voice-status-text');
+      this.joinVoiceBtn = document.getElementById('join-voice-btn');
+      this.leaveVoiceBtn = document.getElementById('leave-voice-btn');
+      this.voiceSettings = document.getElementById('voice-settings');
+      this.muteBtn = document.getElementById('mute-btn');
+      this.voiceLevelFill = document.getElementById('voice-level-fill');
+      this.usersContainer = document.getElementById('users-container');
+      this.userCount = document.getElementById('user-count');
+    }
+
+    setupEventListeners() {
+      // Chat functionality
+      this.sendBtn.addEventListener('click', () => this.sendMessage());
+      this.chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.sendMessage();
+      });
+      
+      // Voice controls
+      this.joinVoiceBtn.addEventListener('click', () => this.joinVoiceChat());
+      this.leaveVoiceBtn.addEventListener('click', () => this.leaveVoiceChat());
+      this.muteBtn.addEventListener('click', () => this.toggleMute());
+      
+      // Mobile navigation
+      const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+      mobileNavBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => this.switchMobilePanel(e.target.dataset.panel));
+      });
+      
+      // Enable audio context on first user interaction
+      const enableAudio = async () => {
+        if (!this.audioContext) {
+          try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            if (this.audioContext.state === 'suspended') {
+              await this.audioContext.resume();
+            }
+          } catch (error) {
+            console.debug('Audio context initialization failed:', error);
+          }
+        }
+        // Remove listeners after first interaction
+        document.removeEventListener('click', enableAudio);
+        document.removeEventListener('keydown', enableAudio);
+      };
+      
+      document.addEventListener('click', enableAudio, { once: true });
+      document.addEventListener('keydown', enableAudio, { once: true });
+      
+      // Push-to-talk
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && this.isInVoiceChat && !this.isPushToTalkActive) {
+          e.preventDefault();
+          this.startSpeaking();
+        }
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        if (e.code === 'Space' && this.isInVoiceChat && this.isPushToTalkActive) {
+          e.preventDefault();
+          this.stopSpeaking();
+        }
+      });
+    }
+
+    async initializeServices() {
+      try {
+        // Initialize Supabase client
+        const { supabase } = await import('/src/lib/supabase-client.js');
+        this.supabase = supabase;
+        
+        // Initialize WebRTC manager
+        const { WebRTCManager } = await import('/src/lib/WebRTCManager.js');
+        this.webrtc = new WebRTCManager();
+        
+        // Set up user authentication
+        await this.setupUser();
+        
+        // Connect to services
+        await this.connectToChat();
+        
+        this.updateStatus('Connected', true);
+      } catch (error) {
+        console.error('Failed to initialize services:', error);
+        this.updateStatus('Connection Failed', false);
+      }
+    }
+
+    async setupUser() {
+      // Check if user is authenticated
+      const { data: { user } } = await this.supabase.auth.getUser();
+      
+      if (user) {
+        this.currentUser = {
+          id: user.id,
+          username: user.user_metadata?.username || user.email?.split('@')[0] || 'User',
+          avatar_url: user.user_metadata?.avatar_url || '/goatos.png',
+          wallet_address: user.user_metadata?.wallet_address || this.generateWalletAddress()
+        };
+      } else {
+        // Generate guest user
+        const guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
+        this.currentUser = {
+          id: guestId,
+          username: 'Guest_' + guestId.substr(-4),
+          avatar_url: '/goatos.png',
+          wallet_address: this.generateWalletAddress()
+        };
+      }
+      
+      // Update user online status
+      await this.updateUserOnlineStatus(true);
+    }
+
+    generateWalletAddress() {
+      // Generate a mock wallet address for demo purposes
+      const chars = '0123456789abcdef';
+      let address = '0x';
+      for (let i = 0; i < 40; i++) {
+        address += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return address;
+    }
+
+    async connectToChat() {
+      // Subscribe to chat messages
+      this.chatSubscription = this.supabase
+        .channel('chat_messages')
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages'
+        }, (payload) => {
+          this.displayMessage(payload.new);
+        })
+        .subscribe();
+      
+      // Load recent messages
+      await this.loadRecentMessages();
+      
+      // Subscribe to voice participants
+      this.voiceSubscription = this.supabase
+        .channel('voice_participants')
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'voice_participants'
+        }, () => {
+          this.updateUsersList();
+        })
+        .subscribe();
+    }
+
+    async loadRecentMessages() {
+      console.log('🔄 Loading recent messages...');
+      
+      const { data: messages, error } = await this.supabase
+        .from('chat_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      
+      if (error) {
+        console.error('Error loading messages:', error);
+        return;
+      }
+      
+      console.log(`📨 Loaded ${messages?.length || 0} messages`);
+      
+      // Clear existing messages first
+      this.chatMessages.innerHTML = '';
+      
+      // Reverse messages to show oldest first, newest last
+      if (messages && messages.length > 0) {
+        messages.reverse().forEach(message => this.displayMessage(message));
+      }
+    }
+
+    async sendMessage() {
+      const message = this.chatInput.value.trim();
+      if (!message) return;
+      
+      try {
+        const { error } = await this.supabase
+          .from('chat_messages')
+          .insert({
+            username: this.currentUser.username,
+            message: message,
+            message_type: 'text'
+          });
+        
+        if (error) throw error;
+        
+        this.chatInput.value = '';
+        this.playNotificationSound('send');
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    }
+
+    displayMessage(messageData) {
+      const messageEl = document.createElement('div');
+      messageEl.className = `message ${messageData.message_type || 'text'}`;
+      
+      const time = new Date(messageData.created_at).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      messageEl.innerHTML = `
+        <div class="message-header">
+          <span class="message-username">${messageData.username}</span>
+          <span class="message-time">${time}</span>
+        </div>
+        <div class="message-content">${messageData.message}</div>
+      `;
+      
+      this.chatMessages.appendChild(messageEl);
+      this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+      
+      // Play notification sound for new messages
+      if (messageData.username !== this.currentUser.username) {
+        this.playNotificationSound('receive');
+      }
+    }
+
+    async joinVoiceChat() {
+      try {
+        await this.webrtc.initialize();
+        
+        // Ensure user exists in users table first
+        await this.updateUserOnlineStatus(true);
+        
+        // Add user to voice session (use upsert to avoid conflicts)
+        const session = await this.getOrCreateVoiceSession();
+        const { error } = await this.supabase
+          .from('voice_participants')
+          .upsert({
+            session_id: session.id,
+            user_id: this.currentUser.id,
+            username: this.currentUser.username,
+            is_speaking: false,
+            is_muted: false,
+            joined_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id,session_id'
+          });
+        
+        if (error) throw error;
+        
+        this.isInVoiceChat = true;
+        this.joinVoiceBtn.classList.add('hidden');
+        this.leaveVoiceBtn.classList.remove('hidden');
+        this.voiceSettings.classList.remove('hidden');
+        
+        this.updateVoiceStatus('Connected', true);
+        this.updateUsersList();
+        
+        // Set up voice level monitoring
+        this.webrtc.onVoiceLevelUpdate = (level) => {
+          this.voiceLevelFill.style.width = `${level * 100}%`;
+        };
+        
+      } catch (error) {
+        console.error('Error joining voice chat:', error);
+        this.updateVoiceStatus('Connection Failed', false);
+      }
+    }
+
+    async leaveVoiceChat() {
+      try {
+        // Remove user from voice session
+        await this.supabase
+          .from('voice_participants')
+          .delete()
+          .eq('user_id', this.currentUser.id);
+        
+        this.webrtc.disconnect();
+        
+        this.isInVoiceChat = false;
+        this.joinVoiceBtn.classList.remove('hidden');
+        this.leaveVoiceBtn.classList.add('hidden');
+        this.voiceSettings.classList.add('hidden');
+        
+        this.updateVoiceStatus('Disconnected', false);
+        this.updateUsersList();
+        
+      } catch (error) {
+        console.error('Error leaving voice chat:', error);
+      }
+    }
+
+    async getOrCreateVoiceSession() {
+      let { data: session, error } = await this.supabase
+        .from('voice_sessions')
+        .select('*')
+        .eq('room_id', 'goat-main-room')
+        .single();
+      
+      if (error || !session) {
+        const { data: newSession, error: createError } = await this.supabase
+          .from('voice_sessions')
+          .insert({ room_id: 'goat-main-room' })
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        session = newSession;
+      }
+      
+      return session;
+    }
+
+    startSpeaking() {
+      if (!this.isInVoiceChat || this.isMuted || this.isPushToTalkActive) return;
+      
+      this.isPushToTalkActive = true;
+      this.webrtc.startSpeaking();
+      this.updateSpeakingStatus(true);
+    }
+
+    stopSpeaking() {
+      if (!this.isPushToTalkActive) return;
+      
+      this.isPushToTalkActive = false;
+      this.webrtc.stopSpeaking();
+      this.updateSpeakingStatus(false);
+    }
+
+    async updateSpeakingStatus(isSpeaking) {
+      try {
+        await this.supabase
+          .from('voice_participants')
+          .update({ is_speaking: isSpeaking })
+          .eq('user_id', this.currentUser.id);
+      } catch (error) {
+        console.error('Error updating speaking status:', error);
+      }
+    }
+
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      this.webrtc.setMuted(this.isMuted);
+      
+      const icon = this.muteBtn.querySelector('.btn-icon');
+      const text = this.muteBtn.querySelector('.btn-text');
+      
+      if (this.isMuted) {
+        icon.textContent = '🔇';
+        text.textContent = 'Unmute';
+        this.muteBtn.classList.add('muted');
+      } else {
+        icon.textContent = '🔊';
+        text.textContent = 'Mute';
+        this.muteBtn.classList.remove('muted');
+      }
+    }
+
+    async updateUsersList() {
+      try {
+        const { data: participants, error } = await this.supabase
+          .from('voice_participants')
+          .select('*')
+          .order('joined_at', { ascending: true });
+        
+        if (error) throw error;
+        
+        this.usersContainer.innerHTML = '';
+        this.userCount.textContent = `${participants.length} online`;
+        
+        participants.forEach(participant => {
+          const userEl = document.createElement('div');
+          userEl.className = `user-item ${participant.is_speaking ? 'speaking' : ''}`;
+          
+          const avatarLetter = participant.username.charAt(0).toUpperCase();
+          const voiceIcon = participant.is_muted ? '🔇' : (participant.is_speaking ? '🎤' : '🔊');
+          
+          userEl.innerHTML = `
+            <div class="user-avatar">${avatarLetter}</div>
+            <div class="user-info">
+              <div class="user-name">${participant.username}</div>
+              <div class="user-status">In voice chat</div>
+            </div>
+            <div class="user-voice-indicator">${voiceIcon}</div>
+          `;
+          
+          this.usersContainer.appendChild(userEl);
+        });
+        
+      } catch (error) {
+        console.error('Error updating users list:', error);
+      }
+    }
+
+    async updateUserOnlineStatus(isOnline) {
+      try {
+        if (isOnline) {
+          // Insert or update user record
+          await this.supabase
+            .from('users')
+            .upsert({
+              id: this.currentUser.id,
+              username: this.currentUser.username,
+              avatar_url: this.currentUser.avatar_url,
+              wallet_address: this.currentUser.wallet_address,
+              is_online: true,
+              last_seen: new Date().toISOString()
+            });
+        } else {
+          await this.supabase
+            .from('users')
+            .update({ is_online: false, last_seen: new Date().toISOString() })
+            .eq('id', this.currentUser.id);
+        }
+      } catch (error) {
+        console.error('Error updating user online status:', error);
+      }
+    }
+
+    updateStatus(text, isOnline) {
+      const statusText = this.hub.querySelector('.chat-status .status-text');
+      statusText.textContent = text;
+      
+      if (isOnline) {
+        this.chatStatus.classList.add('online');
+      } else {
+        this.chatStatus.classList.remove('online');
+      }
+      
+      this.isConnected = isOnline;
+    }
+
+    updateVoiceStatus(text, isOnline) {
+      this.voiceStatusText.textContent = text;
+      
+      if (isOnline) {
+        this.voiceStatus.classList.add('online');
+      } else {
+        this.voiceStatus.classList.remove('online');
+      }
+    }
+
+    async playNotificationSound(type) {
+      // Create audio context for notification sounds
+      try {
+        // Only play sound if audio context is available and running
+        if (this.audioContext && this.audioContext.state === 'running') {
+          const oscillator = this.audioContext.createOscillator();
+          const gainNode = this.audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(this.audioContext.destination);
+          
+          if (type === 'send') {
+            oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+          } else if (type === 'receive') {
+            oscillator.frequency.setValueAtTime(600, this.audioContext.currentTime);
+          }
+          
+          gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+          
+          oscillator.start(this.audioContext.currentTime);
+          oscillator.stop(this.audioContext.currentTime + 0.1);
+        }
+      } catch (error) {
+        // Silently handle audio errors (autoplay policy, etc.)
+        console.debug('Audio notification disabled due to browser policy:', error.message);
+      }
+    }
+
+    switchMobilePanel(panelType) {
+      const textChatPanel = document.querySelector('.text-chat-panel');
+      const rightPanel = document.querySelector('.right-panel');
+      const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+      
+      // Remove active class from all buttons
+      mobileNavBtns.forEach(btn => btn.classList.remove('active'));
+      
+      if (panelType === 'chat') {
+        // Show chat panel, hide voice panel
+        textChatPanel.classList.remove('mobile-hidden');
+        rightPanel.classList.remove('mobile-visible');
+        
+        // Set active button
+        document.querySelector('[data-panel="chat"]').classList.add('active');
+        
+        // Focus on chat input
+        setTimeout(() => this.chatInput.focus(), 100);
+      } else if (panelType === 'voice') {
+        // Hide chat panel, show voice panel
+        textChatPanel.classList.add('mobile-hidden');
+        rightPanel.classList.add('mobile-visible');
+        
+        // Set active button
+        document.querySelector('[data-panel="voice"]').classList.add('active');
+      }
+    }
+
+    show() {
+      this.hub.classList.remove('hidden');
+      this.isVisible = true;
+      this.chatInput.focus();
+    }
+
+    hide() {
+      this.hub.classList.add('hidden');
+      this.isVisible = false;
+      
+      // Clean up when hiding
+      if (this.isInVoiceChat) {
+        this.leaveVoiceChat();
+      }
+      
+      this.updateUserOnlineStatus(false);
+    }
+
+    minimize() {
+      this.hide();
+    }
+
+    toggle() {
+      if (this.isVisible) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    }
+  }
+
+  // Initialize Communication Hub when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    window.communicationHub = new CommunicationHub();
+  });
+</script>

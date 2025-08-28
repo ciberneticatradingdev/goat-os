@@ -16,8 +16,7 @@ export const EXTERNAL_LINKS = {
   WEBSITE: 'https://goat-os.fun',
   WHITEPAPER: '/whitepaper.pdf',
   
-  // Embedded Content
-  TWITTER_EMBED: 'https://platform.twitter.com/embed/Tweet.html?id=1957984737672474994',
+  // Embedded Content - Twitter embed removed
   
   // External Services
   SUPABASE_URL: 'https://zfasxsiqjlxjaqojtvzt.supabase.co',
@@ -72,7 +71,6 @@ export const {
   TELEGRAM,
   WEBSITE,
   WHITEPAPER,
-  TWITTER_EMBED,
   SUPABASE_URL,
   GOOGLE_FONTS_ICONS,
   SUPABASE_CDN

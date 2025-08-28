@@ -1,0 +1,915 @@
+---
+// AudioControls.astro - Voice chat controls component for GOAT-OS Communication Hub
+---
+
+<div id="audio-controls" class="audio-controls">
+  <!-- Voice Status Header -->
+  <div class="voice-header">
+    <div class="voice-title">
+      <span class="voice-icon">🎤</span>
+      <span>Voice Chat</span>
+    </div>
+    <div class="voice-status">
+      <span id="voice-connection-status" class="connection-status disconnected">●</span>
+      <span id="voice-status-text">Disconnected</span>
+    </div>
+  </div>
+
+  <!-- Main Controls -->
+  <div class="main-controls">
+    <!-- Join/Leave Voice Button -->
+    <button id="join-voice-btn" class="control-button join-button" type="button">
+      <span class="button-icon">🔊</span>
+      <span class="button-text">Join Voice</span>
+    </button>
+
+    <!-- Microphone Control -->
+    <div class="control-group">
+      <button id="mic-toggle-btn" class="control-button mic-button" type="button" disabled>
+        <span class="button-icon mic-icon">🎤</span>
+        <span class="button-text">Microphone</span>
+      </button>
+      <div class="mic-level-container">
+        <div class="mic-level-bar">
+          <div id="mic-level-fill" class="mic-level-fill"></div>
+        </div>
+        <span class="mic-level-label">Level</span>
+      </div>
+    </div>
+
+    <!-- Speaker Control -->
+    <div class="control-group">
+      <button id="speaker-toggle-btn" class="control-button speaker-button" type="button" disabled>
+        <span class="button-icon speaker-icon">🔊</span>
+        <span class="button-text">Speaker</span>
+      </button>
+      <div class="volume-container">
+        <input 
+          type="range" 
+          id="volume-slider" 
+          class="volume-slider" 
+          min="0" 
+          max="100" 
+          value="75"
+          disabled
+        />
+        <span class="volume-label">Volume</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Controls -->
+  <div class="advanced-controls">
+    <div class="control-row">
+      <button id="push-to-talk-btn" class="control-button ptt-button" type="button" disabled>
+        <span class="button-icon">📢</span>
+        <span class="button-text">Push to Talk</span>
+      </button>
+      <div class="ptt-info">
+        <span class="ptt-key">Hold SPACE</span>
+      </div>
+    </div>
+
+    <div class="control-row">
+      <button id="noise-suppression-btn" class="control-button feature-button" type="button" disabled>
+        <span class="button-icon">🔇</span>
+        <span class="button-text">Noise Suppression</span>
+      </button>
+      <div class="feature-status">
+        <span id="noise-status" class="status-text">Off</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connection Info -->
+  <div class="connection-info">
+    <div class="info-row">
+      <span class="info-label">Participants:</span>
+      <span id="participant-count" class="info-value">0</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Quality:</span>
+      <span id="connection-quality" class="info-value quality-unknown">Unknown</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Latency:</span>
+      <span id="connection-latency" class="info-value">-- ms</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .audio-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #00ff88;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .audio-controls::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 30% 30%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(255, 20, 147, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .audio-controls > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Voice Header */
+  .voice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 6px;
+  }
+
+  .voice-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    color: #00ff88;
+  }
+
+  .voice-icon {
+    font-size: 16px;
+    filter: drop-shadow(0 0 4px currentColor);
+    animation: pulse 2s infinite;
+  }
+
+  .voice-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .connection-status {
+    font-size: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .connection-status.connected {
+    color: #4ade80;
+    text-shadow: 0 0 4px currentColor;
+  }
+
+  .connection-status.connecting {
+    color: #fbbf24;
+    text-shadow: 0 0 4px currentColor;
+    animation: blink 1s infinite;
+  }
+
+  .connection-status.disconnected {
+    color: #ef4444;
+    text-shadow: 0 0 4px currentColor;
+  }
+
+  #voice-status-text {
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  /* Main Controls */
+  .main-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .control-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 48px;
+  }
+
+  .control-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #00ff88;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.2);
+  }
+
+  .control-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .button-icon {
+    font-size: 16px;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+  }
+
+  .button-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  /* Specific Button Styles */
+  .join-button {
+    background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+    border-color: #00ff88;
+    color: #000000;
+    font-weight: bold;
+  }
+
+  .join-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #00cc6a 0%, #00aa55 100%);
+  }
+
+  .join-button.leave {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #ef4444;
+  }
+
+  .join-button.leave:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+
+  .mic-button.muted {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+  }
+
+  .mic-button.muted .mic-icon {
+    color: #ef4444;
+  }
+
+  .speaker-button.muted {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+  }
+
+  .speaker-button.muted .speaker-icon {
+    color: #ef4444;
+  }
+
+  .ptt-button.active {
+    background: rgba(0, 255, 136, 0.2);
+    border-color: #00ff88;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.4);
+  }
+
+  .feature-button.active {
+    background: rgba(0, 255, 136, 0.2);
+    border-color: #00ff88;
+  }
+
+  /* Control Groups */
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mic-level-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+  }
+
+  .mic-level-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .mic-level-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80 0%, #fbbf24 50%, #ef4444 100%);
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.1s ease;
+  }
+
+  .mic-level-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 35px;
+  }
+
+  .volume-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+  }
+
+  .volume-slider {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #00ff88;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 255, 136, 0.5);
+  }
+
+  .volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #00ff88;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 4px rgba(0, 255, 136, 0.5);
+  }
+
+  .volume-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 45px;
+  }
+
+  /* Advanced Controls */
+  .advanced-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .control-row .control-button {
+    flex: 1;
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .ptt-info {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .ptt-key {
+    font-weight: bold;
+    color: #00ff88;
+  }
+
+  .feature-status {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    font-size: 11px;
+    min-width: 40px;
+    justify-content: center;
+  }
+
+  .status-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+  }
+
+  .status-text.on {
+    color: #4ade80;
+  }
+
+  /* Connection Info */
+  .connection-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .info-label {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .info-value {
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .quality-excellent {
+    color: #4ade80;
+  }
+
+  .quality-good {
+    color: #fbbf24;
+  }
+
+  .quality-poor {
+    color: #ef4444;
+  }
+
+  .quality-unknown {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .audio-controls {
+      padding: 12px;
+      gap: 12px;
+    }
+
+    .voice-header {
+      padding: 8px 12px;
+    }
+
+    .control-button {
+      padding: 10px 12px;
+      min-height: 44px;
+      font-size: 13px;
+    }
+
+    .control-row .control-button {
+      min-height: 36px;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .connection-info {
+      padding: 8px;
+      font-size: 11px;
+    }
+  }
+
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    .audio-controls {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    }
+
+    .control-button {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .control-button:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+</style>
+
+<script>
+  class AudioControls {
+    constructor() {
+      this.joinVoiceBtn = document.getElementById('join-voice-btn');
+      this.micToggleBtn = document.getElementById('mic-toggle-btn');
+      this.speakerToggleBtn = document.getElementById('speaker-toggle-btn');
+      this.pushToTalkBtn = document.getElementById('push-to-talk-btn');
+      this.noiseSuppressionBtn = document.getElementById('noise-suppression-btn');
+      this.volumeSlider = document.getElementById('volume-slider');
+      this.micLevelFill = document.getElementById('mic-level-fill');
+      this.voiceConnectionStatus = document.getElementById('voice-connection-status');
+      this.voiceStatusText = document.getElementById('voice-status-text');
+      this.participantCount = document.getElementById('participant-count');
+      this.connectionQuality = document.getElementById('connection-quality');
+      this.connectionLatency = document.getElementById('connection-latency');
+      this.noiseStatus = document.getElementById('noise-status');
+      
+      this.isConnected = false;
+      this.isMuted = false;
+      this.isSpeakerMuted = false;
+      this.isPushToTalkMode = false;
+      this.isPushToTalkActive = false;
+      this.isNoiseSuppressionEnabled = false;
+      this.volume = 75;
+      this.micLevel = 0;
+      
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.updateUI();
+    }
+
+    setupEventListeners() {
+      // Join/Leave voice chat
+      this.joinVoiceBtn?.addEventListener('click', () => {
+        this.toggleVoiceConnection();
+      });
+
+      // Microphone toggle
+      this.micToggleBtn?.addEventListener('click', () => {
+        this.toggleMicrophone();
+      });
+
+      // Speaker toggle
+      this.speakerToggleBtn?.addEventListener('click', () => {
+        this.toggleSpeaker();
+      });
+
+      // Push to talk
+      this.pushToTalkBtn?.addEventListener('click', () => {
+        this.togglePushToTalk();
+      });
+
+      // Noise suppression
+      this.noiseSuppressionBtn?.addEventListener('click', () => {
+        this.toggleNoiseSuppression();
+      });
+
+      // Volume control
+      this.volumeSlider?.addEventListener('input', (e) => {
+        this.setVolume(parseInt(e.target.value));
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        this.handleKeyDown(e);
+      });
+
+      document.addEventListener('keyup', (e) => {
+        this.handleKeyUp(e);
+      });
+
+      // Custom events from parent component
+      window.addEventListener('voice-connection-changed', (e) => {
+        this.setConnectionStatus(e.detail.connected);
+      });
+
+      window.addEventListener('voice-participant-count-changed', (e) => {
+        this.setParticipantCount(e.detail.count);
+      });
+
+      window.addEventListener('voice-quality-changed', (e) => {
+        this.setConnectionQuality(e.detail.quality, e.detail.latency);
+      });
+
+      window.addEventListener('voice-mic-level-changed', (e) => {
+        this.setMicLevel(e.detail.level);
+      });
+    }
+
+    toggleVoiceConnection() {
+      if (this.isConnected) {
+        this.leaveVoice();
+      } else {
+        this.joinVoice();
+      }
+    }
+
+    joinVoice() {
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-join-request'));
+      
+      this.setConnectionStatus('connecting');
+    }
+
+    leaveVoice() {
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-leave-request'));
+      
+      this.setConnectionStatus(false);
+    }
+
+    toggleMicrophone() {
+      this.isMuted = !this.isMuted;
+      
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-mic-toggle', {
+        detail: { muted: this.isMuted }
+      }));
+      
+      this.updateMicrophoneUI();
+    }
+
+    toggleSpeaker() {
+      this.isSpeakerMuted = !this.isSpeakerMuted;
+      
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-speaker-toggle', {
+        detail: { muted: this.isSpeakerMuted }
+      }));
+      
+      this.updateSpeakerUI();
+    }
+
+    togglePushToTalk() {
+      this.isPushToTalkMode = !this.isPushToTalkMode;
+      
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-ptt-mode-toggle', {
+        detail: { enabled: this.isPushToTalkMode }
+      }));
+      
+      this.updatePushToTalkUI();
+    }
+
+    toggleNoiseSuppression() {
+      this.isNoiseSuppressionEnabled = !this.isNoiseSuppressionEnabled;
+      
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-noise-suppression-toggle', {
+        detail: { enabled: this.isNoiseSuppressionEnabled }
+      }));
+      
+      this.updateNoiseSuppressionUI();
+    }
+
+    setVolume(volume) {
+      this.volume = Math.max(0, Math.min(100, volume));
+      
+      // Dispatch event to parent component
+      window.dispatchEvent(new CustomEvent('voice-volume-change', {
+        detail: { volume: this.volume }
+      }));
+      
+      if (this.volumeSlider) {
+        this.volumeSlider.value = this.volume;
+      }
+    }
+
+    setMicLevel(level) {
+      this.micLevel = Math.max(0, Math.min(100, level));
+      
+      if (this.micLevelFill) {
+        this.micLevelFill.style.width = `${this.micLevel}%`;
+      }
+    }
+
+    setConnectionStatus(status) {
+      if (typeof status === 'string') {
+        // Handle connecting state
+        this.voiceConnectionStatus?.classList.remove('connected', 'disconnected');
+        this.voiceConnectionStatus?.classList.add(status);
+        
+        if (this.voiceStatusText) {
+          this.voiceStatusText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        }
+        
+        if (status === 'connecting') {
+          this.setControlsEnabled(false);
+        }
+      } else {
+        // Handle boolean connected state
+        this.isConnected = status;
+        this.updateUI();
+      }
+    }
+
+    setParticipantCount(count) {
+      if (this.participantCount) {
+        this.participantCount.textContent = count.toString();
+      }
+    }
+
+    setConnectionQuality(quality, latency) {
+      if (this.connectionQuality) {
+        this.connectionQuality.className = 'info-value quality-' + quality;
+        this.connectionQuality.textContent = quality.charAt(0).toUpperCase() + quality.slice(1);
+      }
+      
+      if (this.connectionLatency && latency !== undefined) {
+        this.connectionLatency.textContent = `${latency} ms`;
+      }
+    }
+
+    handleKeyDown(e) {
+      // Space key for push-to-talk
+      if (e.code === 'Space' && this.isPushToTalkMode && !this.isPushToTalkActive) {
+        e.preventDefault();
+        this.isPushToTalkActive = true;
+        
+        // Dispatch event to parent component
+        window.dispatchEvent(new CustomEvent('voice-ptt-start'));
+        
+        this.updatePushToTalkUI();
+      }
+    }
+
+    handleKeyUp(e) {
+      // Space key for push-to-talk
+      if (e.code === 'Space' && this.isPushToTalkMode && this.isPushToTalkActive) {
+        e.preventDefault();
+        this.isPushToTalkActive = false;
+        
+        // Dispatch event to parent component
+        window.dispatchEvent(new CustomEvent('voice-ptt-stop'));
+        
+        this.updatePushToTalkUI();
+      }
+    }
+
+    updateUI() {
+      this.updateConnectionUI();
+      this.updateMicrophoneUI();
+      this.updateSpeakerUI();
+      this.updatePushToTalkUI();
+      this.updateNoiseSuppressionUI();
+      this.setControlsEnabled(this.isConnected);
+    }
+
+    updateConnectionUI() {
+      if (this.isConnected) {
+        this.voiceConnectionStatus?.classList.remove('disconnected', 'connecting');
+        this.voiceConnectionStatus?.classList.add('connected');
+        
+        if (this.voiceStatusText) {
+          this.voiceStatusText.textContent = 'Connected';
+        }
+        
+        if (this.joinVoiceBtn) {
+          this.joinVoiceBtn.classList.add('leave');
+          this.joinVoiceBtn.querySelector('.button-text').textContent = 'Leave Voice';
+          this.joinVoiceBtn.querySelector('.button-icon').textContent = '🔇';
+        }
+      } else {
+        this.voiceConnectionStatus?.classList.remove('connected', 'connecting');
+        this.voiceConnectionStatus?.classList.add('disconnected');
+        
+        if (this.voiceStatusText) {
+          this.voiceStatusText.textContent = 'Disconnected';
+        }
+        
+        if (this.joinVoiceBtn) {
+          this.joinVoiceBtn.classList.remove('leave');
+          this.joinVoiceBtn.querySelector('.button-text').textContent = 'Join Voice';
+          this.joinVoiceBtn.querySelector('.button-icon').textContent = '🔊';
+        }
+      }
+    }
+
+    updateMicrophoneUI() {
+      if (this.micToggleBtn) {
+        if (this.isMuted) {
+          this.micToggleBtn.classList.add('muted');
+          this.micToggleBtn.querySelector('.button-text').textContent = 'Unmute Mic';
+        } else {
+          this.micToggleBtn.classList.remove('muted');
+          this.micToggleBtn.querySelector('.button-text').textContent = 'Mute Mic';
+        }
+      }
+    }
+
+    updateSpeakerUI() {
+      if (this.speakerToggleBtn) {
+        if (this.isSpeakerMuted) {
+          this.speakerToggleBtn.classList.add('muted');
+          this.speakerToggleBtn.querySelector('.button-text').textContent = 'Unmute Speaker';
+        } else {
+          this.speakerToggleBtn.classList.remove('muted');
+          this.speakerToggleBtn.querySelector('.button-text').textContent = 'Mute Speaker';
+        }
+      }
+    }
+
+    updatePushToTalkUI() {
+      if (this.pushToTalkBtn) {
+        if (this.isPushToTalkMode) {
+          this.pushToTalkBtn.classList.add('active');
+          if (this.isPushToTalkActive) {
+            this.pushToTalkBtn.querySelector('.button-text').textContent = 'Speaking...';
+          } else {
+            this.pushToTalkBtn.querySelector('.button-text').textContent = 'PTT Enabled';
+          }
+        } else {
+          this.pushToTalkBtn.classList.remove('active');
+          this.pushToTalkBtn.querySelector('.button-text').textContent = 'Push to Talk';
+        }
+      }
+    }
+
+    updateNoiseSuppressionUI() {
+      if (this.noiseSuppressionBtn) {
+        if (this.isNoiseSuppressionEnabled) {
+          this.noiseSuppressionBtn.classList.add('active');
+        } else {
+          this.noiseSuppressionBtn.classList.remove('active');
+        }
+      }
+      
+      if (this.noiseStatus) {
+        this.noiseStatus.textContent = this.isNoiseSuppressionEnabled ? 'On' : 'Off';
+        this.noiseStatus.className = this.isNoiseSuppressionEnabled ? 'status-text on' : 'status-text';
+      }
+    }
+
+    setControlsEnabled(enabled) {
+      const controls = [
+        this.micToggleBtn,
+        this.speakerToggleBtn,
+        this.pushToTalkBtn,
+        this.noiseSuppressionBtn,
+        this.volumeSlider
+      ];
+      
+      controls.forEach(control => {
+        if (control) {
+          control.disabled = !enabled;
+        }
+      });
+    }
+
+    // Public methods for parent component
+    setMuted(muted) {
+      this.isMuted = muted;
+      this.updateMicrophoneUI();
+    }
+
+    setSpeakerMuted(muted) {
+      this.isSpeakerMuted = muted;
+      this.updateSpeakerUI();
+    }
+
+    setPushToTalkMode(enabled) {
+      this.isPushToTalkMode = enabled;
+      this.updatePushToTalkUI();
+    }
+
+    setNoiseSuppressionEnabled(enabled) {
+      this.isNoiseSuppressionEnabled = enabled;
+      this.updateNoiseSuppressionUI();
+    }
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      window.audioControls = new AudioControls();
+    });
+  } else {
+    window.audioControls = new AudioControls();
+  }
+</script>

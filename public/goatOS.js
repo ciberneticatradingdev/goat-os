@@ -113,6 +113,11 @@ class GoatOS {
           
           setTimeout(() => {
             loginScreen.style.opacity = '1';
+            
+            // Auto-open Communication Hub after login screen appears
+            setTimeout(() => {
+              this.launchApp('communication-hub');
+            }, 1000);
           }, 50);
         }
       }, 500);
@@ -198,6 +203,7 @@ class GoatOS {
       'telegram': 'Telegram',
       'contract': 'Contract Info',
       'chat': 'Chat',
+      'communication-hub': 'Communication Hub',
       'goatteaser': 'Goat Era Teaser'
     };
     return names[appName] || appName;
@@ -324,6 +330,9 @@ class GoatOS {
       case 'chat':
         this.openWindow('chat-window');
         loadChatMessages();
+        break;
+      case 'communication-hub':
+        this.openWindow('communication-hub-window');
         break;
       case 'goatteaser':
         this.openWindow('goatteaser-window');
@@ -765,6 +774,7 @@ function displayChatMessages(messages) {
 
 async function sendChatMessage() {
   if (!supabaseClient) {
+    console.error('❌ Supabase client not ready');
     alert('Chat service not ready. Please try again.');
     return;
   }
@@ -792,27 +802,41 @@ async function sendChatMessage() {
   sendBtn.disabled = true;
   sendBtn.textContent = 'Sending...';
   
+  console.log('📤 Attempting to send message:', { username, message });
+  
   try {
+    // Use the correct field names that match the database table structure
+    const messageData = {
+      username: username,
+      message: message,
+      message_type: 'text',
+      metadata: {}
+    };
+    
+    console.log('📋 Message data to insert:', messageData);
+    
     const { data, error } = await supabaseClient
       .from('chat_messages')
-      .insert([
-        {
-          username: username,
-          message: message
-        }
-      ]);
+      .insert([messageData])
+      .select();
     
     if (error) {
-      console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      console.error('❌ Database error:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      alert(`Failed to send message: ${error.message}`);
       return;
     }
     
+    console.log('✅ Message sent successfully:', data);
     messageInput.value = '';
-    console.log('Message sent successfully');
     // No need to reload messages, real-time subscription will handle it
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('❌ Unexpected error sending message:', error);
     alert('Failed to send message. Please try again.');
   } finally {
     sendBtn.disabled = false;
@@ -852,3 +876,8 @@ window.navigateBack = navigateBack;
 window.copyContractAddress = copyContractAddress;
 window.loadChatMessages = loadChatMessages;
 window.sendChatMessage = sendChatMessage;
+
+// Make goatOS functions globally accessible
+window.goatOS = goatOS;
+window.openWindow = (windowId) => goatOS.openWindow(windowId);
+window.closeWindow = (windowId) => goatOS.closeWindow(windowId);
