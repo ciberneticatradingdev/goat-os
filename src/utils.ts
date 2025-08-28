@@ -8,7 +8,7 @@ export const EXTERNAL_LINKS = {
   DEXSCREENER_TOKEN: (contractAddress: string) => `https://dexscreener.com/solana/${contractAddress}`,
   
   // Social Media Links
-  TWITTER: 'https://x.com/',
+  TWITTER: 'https://x.com/Goat__OS',
   TWITTER_COMMUNITY: '',
   TELEGRAM: '', // Placeholder - update with actual link
   
